@@ -1,0 +1,29 @@
+{
+	"basenames": ["raffy.xyz"],
+	"root": {
+		".": {
+			"name": "Offchain Resolver Demo",
+			"avatar": "https://discuss.ens.domains/uploads/db9688/original/1X/8dff9ce9c14b40a5c82a00f4cf47ed9b4b43a06d.png",
+			"$eth": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
+			"#ipfs": "bafybeiawq7pbt4krnopfmcvymvp2uz4ohibd5p7ugskkybvdmwa2v7evpy"
+		},
+		"raffy": {
+			"$eth": "0x51050ec063d393217B436747617aD1C2285Aeeee"
+		},
+		"sub": {
+			".": {
+				"name": "Subdomain",
+				"avatar": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/US_Navy_040730-N-1234E-002_PCU_Virginia_%28SSN_774%29_returns_to_the_General_Dynamics_Electric_Boat_shipyard.jpg/1200px-US_Navy_040730-N-1234E-002_PCU_Virginia_%28SSN_774%29_returns_to_the_General_Dynamics_Electric_Boat_shipyard.jpg",
+				"$eth": "0x000000000000000000000000000000000000dEaD",
+				"$btc": "bc1qjqg9slurvjukfl92wp58y94480fvh4uc2pwa6n",
+				"$ltc": "ltc1qedz8tppwy2snqu305cjs0c3ya2tk4j6u634q4t",
+				"$doge": "DQ5kE8puJbqdCw424QXM6hR9rn1argyM6z",
+				"com.twitter": "adraffy"
+			},
+			"raffy ": {
+				"$eth": "0x51050ec063d393217B436747617aD1C2285Aeeee",
+				"avatar": "https://raffy.antistupid.com/ens.jpg"
+			}
+		}
+	}
+}
