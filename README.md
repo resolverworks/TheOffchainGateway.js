@@ -50,10 +50,9 @@ Simple Offchain DNS and ENS CCIP-Read Gateway in JS
     "index": { "label": "_", "limit": 100 },
     // the node graph
     "root": {
-        // this is the "raffy.xyz" (root node) records
         ".": {
             // text()
-            "name": "Raffy",
+            "name": "This is [raffy.xyz]",
             "avatar": "https://raffy.antistupid.com/ens.jpg",
             // addr()
             "$eth": "0x51050ec063d393217B436747617aD1C2285Aeeee",
@@ -62,10 +61,15 @@ Simple Offchain DNS and ENS CCIP-Read Gateway in JS
             // pubkey()
             "#pubkey": { "x": 123, "y": 456 }
         },
-        // this is "sub.raffy.xyz" records
         "sub": {
-            "$btc": "bc1q9ejpfyp7fvjdq5fjx5hhrd6uzevn9gupxd98aq",
-            "$doge": "DKcAMwyEq5rwe2nXUMBqVYZFSNneCg6iSL"
+            "name": "This is sub[.raffy.xyz]",
+            "$btc": "bc1q9ejpfyp7fvjdq5fjx5hhrd6uzevn9gupxd98aq", // native address
+            "$doge": "DKcAMwyEq5rwe2nXUMBqVYZFSNneCg6iSL"         // native address
+        },
+        "abc": {
+            "def" {
+                "name": "This is def.abc[.raffy.xyz]"
+            }
         }
     }
 }
