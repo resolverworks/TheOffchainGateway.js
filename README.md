@@ -40,34 +40,34 @@ Simple Offchain ENS CCIP-Read Gateway in JS
 * async loads [`tree.json`](./storage/json/tree.json)
 ```js
 {
-	// (optional) basenames are elided from the queried name
-	"basenames": ["raffy.xyz", "raffy.eth"], 
-	// (optional) if enabled, all $eth addresses are queriable as [hex].[reverse].[basename]
-	// eg. {"$eth": "0x1234abcd"} + {"reverse": "rev"} => 1234abcd.rev.raffy.xyz
-	"reverse": "addr.reverse", 
-	// (optional) if enabled, "[label].name" will have a "description" equal to it's labels
-	// eg. [a.x.eth, b.x.eth] => text(_.x.eth, "description") = "a, b"
-	"index": { "label": "_", "limit": 100 },
-	// the node graph
-	"root": {
-		// this is the "raffy.xyz" (root node) records
-		".": {
-			// text()
-			"name": "Raffy",
-			"avatar": "https://raffy.antistupid.com/ens.jpg",
-			// addr()
-			"$eth": "0x51050ec063d393217B436747617aD1C2285Aeeee",
-			// contenthash()
-			"#ipfs": "bafzaajaiaejcbsfhaddzcah7nu2mdpr5ovzj3kdd3pkkq3wfjnjupkxzxcge2e35",
-			// pubkey()
-			"#pubkey": { "x": 123, "y": 456 }
-		},
-		// this is "sub.raffy.xyz" records
-		"sub": {
-			"$btc": "bc1q9ejpfyp7fvjdq5fjx5hhrd6uzevn9gupxd98aq",
-			"$doge": "DKcAMwyEq5rwe2nXUMBqVYZFSNneCg6iSL"
-		}
-	}
+    // (optional) basenames are elided from the queried name
+    "basenames": ["raffy.xyz", "raffy.eth"], 
+    // (optional) if enabled, all $eth addresses are queriable as [hex].[reverse].[basename]
+    // eg. {"$eth": "0x1234abcd"} + {"reverse": "rev"} => 1234abcd.rev.raffy.xyz
+    "reverse": "addr.reverse", 
+    // (optional) if enabled, "[label].name" will have a "description" equal to it's labels
+    // eg. [a.x.eth, b.x.eth] => text(_.x.eth, "description") = "a, b"
+    "index": { "label": "_", "limit": 100 },
+    // the node graph
+    "root": {
+        // this is the "raffy.xyz" (root node) records
+        ".": {
+            // text()
+            "name": "Raffy",
+            "avatar": "https://raffy.antistupid.com/ens.jpg",
+            // addr()
+            "$eth": "0x51050ec063d393217B436747617aD1C2285Aeeee",
+            // contenthash()
+            "#ipfs": "bafzaajaiaejcbsfhaddzcah7nu2mdpr5ovzj3kdd3pkkq3wfjnjupkxzxcge2e35",
+            // pubkey()
+            "#pubkey": { "x": 123, "y": 456 }
+        },
+        // this is "sub.raffy.xyz" records
+        "sub": {
+            "$btc": "bc1q9ejpfyp7fvjdq5fjx5hhrd6uzevn9gupxd98aq",
+            "$doge": "DKcAMwyEq5rwe2nXUMBqVYZFSNneCg6iSL"
+        }
+    }
 }
 ```
 
