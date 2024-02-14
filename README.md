@@ -1,14 +1,12 @@
 # TheOffchainGateway.js
-Simple Offchain DNS and ENS CCIP-Read Gateway in JS
-
-*under construction*
+Simple Offchain DNS and ENS CCIP-Read Gateway in JS powered by [TheOffchainResolver.sol](https://github.com/resolverworks/TheOffchainResolver.sol)
 
 ## Instructions
 
 * update [`config.js`](./config.js)
 	* set private key
 	* set server port and endpoint path
-	* pick a [storage profile](#storage-profiles)
+* update [`routes.js`]('./routes.js)
 * start server: `node app.js`
 * for **DNS**:
 	* set `TXT` to `ENS1 $THE_RESOLVER_ADDRESS $YOUR_SIGNER $YOUR_ENDPOINT`
@@ -16,39 +14,76 @@ Simple Offchain DNS and ENS CCIP-Read Gateway in JS
 	* set `PublicResolver.text($YOUR_NAME, "ccip.context")` to `$YOUR_SIGNER $YOUR_ENDPOINT`
 	* set `ENS.resolver("$YOUR_NAME")` to `$THE_RESOLVER_ADDRESS`
 
-## Storage Profiles
+## Routers
 
-### [storage/json/flat.js](./storage/json/flat.js)
+ * The `slug` is the `POST` endpoint path `/slug`
+ * You can use [multiple routers.](./routes.js)
+ * Routers that support [`fetch_root()`](./utils/Router.js) have a JSON API:
+	* `GET /${slug}/root` &rarr; tree-like JSON
+	* `GET /${slug}/flat` &rarr; flat-like JSON
+	* `GET /${slug}/names` &rarr; JSON array of names with records
 
-* extremely simple
-* loads [`flat.json`](./storage/json/flat.json) once on launch
-* only `name` → `addr(60)`
+### Just One [`Record`](./utils/Record.js)
 
-### [storage/json/flat2.js](./storage/json/flat2.js)
+```js
+route({
+	slug: 'raffy',
+	fetch_record() {
+		return Record.from_json({
+			name: 'Raffy',
+			description: new Date().toLocaleString(),
+			avatar: 'https://raffy.antistupid.com/ens.jpg',
+			$eth: '0x51050ec063d393217B436747617aD1C2285Aeeee'
+		});
+	}
+});
+```
 
-* sync loads [`flat.json`](./storage/json/flat.json)
-* reloads on change
-* uses [`Tree`](./utils/tree.js) architecture
-	* automatic `JSON` endpoints:
-		* http://$server/root — tree `{label: record}`
-		* http://$server/names — flat list of names
-		* http://$server/flat — flat `{name: record}`
-
-### [storage/json/tree.js](./storage/json/tree.js) (Default)
-
-* uses [`Tree`](./utils/tree.js) architecture
-* async loads [`tree.json`](./storage/json/tree.json)
+### Static `{name: addr(60)}` Database
+```js
+import {EVMAddressRecord} from './utils/EVMAddressRecord.js';
+import {readFileSync} from 'node:fs';
+let simple = readFileSync(new URL('./examples/simple.json', import.meta.url));
+route({
+	slug: 'simple',
+	fetch_record({name}) {
+		let a = simple[name];
+		if (a) return EVMAddressRecord.from(a);
+	}
+});
+```
+#### [examples/simple.json](./examples/simple.json)
 ```js
 {
-    // (optional) basenames are elided from the queried name
-    "basenames": ["raffy.xyz", "raffy.eth"], 
-    // (optional) if enabled, all $eth addresses are queriable as [hex].[reverse].[basename]
-    // eg. {"$eth": "0x1234abcd"} + {"reverse": "rev"} => 1234abcd.rev.raffy.xyz
-    "reverse": "addr.reverse", 
-    // (optional) if enabled, "[label].name" will have a "description" equal to it's labels
-    // eg. [a.x.eth, b.x.eth] => text(_.x.eth, "description") = "a, b"
-    "index": { "label": "_", "limit": 100 },
-    // the node graph
+          "raffy.xyz": "0x1111111111111111111111111111111111111111",
+    "alice.raffy.xyz": "0x2222222222222222222222222222222222222222",
+      "bob.raffy.xyz": "0x3333333333333333333333333333333333333333"
+}
+```
+
+### Auto-reloading Tree Database
+```js
+import {NodeRouter} from './routers/NodeRouter.js';
+import {FileReloader} from './utils/FileReloader.js';
+import {parse_tree_json_file} from './parsers.js';
+let router = new NodeRouter({
+	slug: 'tree',
+	// (optional) if enabled, all $eth addresses are queriable as [hex].[reverse].[basename]
+	// eg. {"$eth": "0x1234abcd"} + {"reverse": "rev"} => 1234abcd.rev.raffy.xyz
+	reverse: 'reverse.name'
+	// (optional) if an integer, "_.name" will have a "description" equal to its children
+	// eg. [a.x.eth, b.x.eth] => text(_.x.eth, "description") = "a, b"
+	index: Infinity
+});
+router.loader = FileReloader(
+	new URL('./examples/tree.json', import.meta.url), // file (see below)
+	router.reloader,                                  // signal to router to reload()
+	parse_tree_json_file                              // transforms json into nodes/records
+);
+```
+#### [examples/tree.json](./examples/tree.json)
+```js
+{	
     "root": {
         ".": {
             // text()
@@ -61,22 +96,65 @@ Simple Offchain DNS and ENS CCIP-Read Gateway in JS
             // pubkey()
             "#pubkey": { "x": 123, "y": 456 }
         },
-        "sub": {
+        "alice": {
             "name": "This is sub[.raffy.xyz]",
             "$btc": "bc1q9ejpfyp7fvjdq5fjx5hhrd6uzevn9gupxd98aq", // native address
             "$doge": "DKcAMwyEq5rwe2nXUMBqVYZFSNneCg6iSL"         // native address
         },
-        "abc": {
-            "def" {
-                "name": "This is def.abc[.raffy.xyz]"
+        "aaa": {
+            "bbb" {
+                "name": "This is bbb.aaa[.raffy.xyz]"
             }
         }
-    }
+    },
+    // (optional) basenames are elided from the queried name
+    "basenames": ["raffy.xyz", "raffy.eth"]
 }
 ```
+### Auto-reloading Flat Database
+```js
+import {NodeRouter} from './routers/NodeRouter.js';
+import {FileReloader} from './utils/FileReloader.js';
+import {parse_flat_json_file} from './parsers.js';
+let router = new NodeRouter({slug: 'flat'});
+router.loader = FileReloader(new URL('./examples/flat.json', import.meta.url), router.reloader, parse_flat_json_file);
+route(router);
+```
+#### [examples/flat.json](./examples/flat.json)
+```js
+{
+	"raffy.xyz": {
+		"name": "raffy",
+		"avatar": "https://gmcafe.s3.us-east-2.amazonaws.com/gmoo/jpg-256/1.jpg",
+		"$eth": "0x1111111111111111111111111111111111111111"
+	},
+	"alice.raffy.xyz": {
+		"name": "Alice",
+		"avatar": "https://gmcafe.s3.us-east-2.amazonaws.com/gmoo/jpg-256/2.jpg",
+		"$eth": "0x2222222222222222222222222222222222222222"
+	}
+}
+```
+### Airtable using `"name" + "address"` columns
+```js
+import {AirtableRouter} from './routers/AirtableRouter.js';
+route(new AirtableRouter({
+	slug: 'air',
+	secret: '...',
+	base: '...'
+}));
+```
 
-### [storage/mirror.js](./storage/mirror.js)
-
-* dynamically mirrors `a.b.c` to `a.eth` using mainnet
-
-### storage/sqlite.js (NYI)
+### Mainnet On-chain Mirror
+```js
+import {MirrorRouter} from './routers/MirrorRouter.js';
+import {ethers} from 'ethers';
+route(new MirrorRouter({
+	slug: 'mirror',
+	provider: new ethers.CloudflareProvider(),
+	// translate the incoming name into an on-chain name
+	extract({name, labels}) {
+		return `${labels[0]}.eth`; // "a.b.c" => "a.eth"  (leading label)
+	}
+}));
+```

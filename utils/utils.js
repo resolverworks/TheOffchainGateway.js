@@ -7,6 +7,10 @@ export function log(...a) {
 	console.log(`${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())} ${d.toLocaleTimeString(undefined, {hour12: false})}`, ...a);
 }
 
+export function is_null_hex(s) {
+	return !s || /^(0x)?0*$/i.test(s);
+}
+
 export function is_hex(s) {
 	return typeof s === 'string' && /^0x[0-9a-f]*$/i.test(s);
 }

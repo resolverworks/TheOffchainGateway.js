@@ -1,8 +1,11 @@
 import {createServer, HTTPError} from './utils/http.js';
 import {log, is_address, is_hex, labels_from_dns_encoded, safe_str, coin_name} from './utils/utils.js';
-import {HTTP_PORT, HTTP_ENDPOINT, PRIVATE_KEY, STORAGE, THE_RESOLVER_ADDRESS, EXP_SEC} from './config.js';
+import {HTTP_PORT, PRIVATE_KEY, ROUTER_MAP, THE_RESOLVER_ADDRESS, EXP_SEC} from './config.js';
 import {History} from './utils/History.js';
+import {Router} from './utils/Router.js';
 import {ethers} from 'ethers';
+
+import './routes.js';
 
 const SIGNING_KEY = new ethers.SigningKey(PRIVATE_KEY);
 const ABI_CODER = ethers.AbiCoder.defaultAbiCoder();
@@ -30,20 +33,29 @@ const http = createServer(async (req, reply) => {
 			case 'GET': {
 				if (url.pathname === '/') {
 					return reply.end('hi');
-				} else if (fetch_root && url.pathname === '/tree') {
-					return reply.json(await fetch_root());
-				} else if (fetch_root && url.pathname === '/names') {
-					let root = await fetch_root();
-					return reply.json([...root.find_nodes()].map(x => x.name));
-				} else if (fetch_root && url.pathname === '/flat') {
-					let root = await fetch_root();
-					let flat = {};
-					for (let node of root.find_nodes()) {
-						if (node.rec) {
-							flat[node.name] = node.rec;
+				}
+				let [_, first, ...rest] = url.pathname.split('/');
+				let router = ROUTER_MAP.get(first);
+				if (router) {
+					switch (rest.join('/')) {
+						case 'tree': {
+							return reply.json(await Router.root(router));
+						}
+						case 'names': {
+							let root = await Router.root(router);
+							return reply.json([...root.find_nodes()].map(x => x.name));
+						}
+						case 'flat': {
+							let root = await Router.root(router);
+							let flat = {};
+							for (let node of root.find_nodes()) {
+								if (node.rec) {
+									flat[node.name] = node.rec;
+								}
+							}
+							return reply.json(flat);
 						}
 					}
-					return reply.json(flat);
 				}
 				throw new HTTPError(404, 'file not found');
 			}
@@ -52,8 +64,9 @@ const http = createServer(async (req, reply) => {
 				return reply.end();
 			}
 			case 'POST': {
-				if (url.pathname === HTTP_ENDPOINT) {
-					return await handle_ccip(req, reply);
+				let router = ROUTER_MAP.get(url.pathname.slice(1));
+				if (router) {
+					return await handle_ccip(router, req, reply);
 				}
 				throw new HTTPError(404, 'file not found');
 			}
@@ -72,26 +85,29 @@ const http = createServer(async (req, reply) => {
 	}
 });
 
-const {fetch_record, fetch_root} = await import(STORAGE);
-if (!fetch_record) throw new Error(`expected fetch_record()`);
+if (!ROUTER_MAP.size) throw new Error(`expected a router`);
+for (let r of ROUTER_MAP.values()) {
+	await r.fetch_root?.();
+	log(`Loaded: ${r.slug}`);	
+}
+
+// start server
 await http.start_listen(HTTP_PORT);
 console.log(`Listening on ${http.address().port}`);
-console.log(`Endpoint: ${HTTP_ENDPOINT}`);
+console.log(`Endpoints: ${[...ROUTER_MAP.keys()].join(' ')}`);
 console.log(`Signer: ${ethers.computeAddress(SIGNING_KEY)}`);
-console.log(`Storage: ${STORAGE}`);
-console.log(`Storage supports fetch_root(): ${!!fetch_root}`);
 RESOLVER_ABI.forEachFunction(f => console.log(`Supports [${f.selector}] ${f.__name}`));
 log('Ready!');
 
 // https://eips.ethereum.org/EIPS/eip-3668
-async function handle_ccip(req, reply) {
+async function handle_ccip(router, req, reply) {
 	let {sender, data} = await req.read_json();
 	if (!is_address(sender)) throw new HTTPError(400, 'expected sender address');
 	if (!is_hex(data)) throw new HTTPError(400, 'expected calldata');
 	sender = sender.toLowerCase();
 	data = data.toLowerCase();
 	let history = new History(1);
-	let result = await handle_ccip_call(sender, data, history);
+	let result = await handle_ccip_call(router, sender, data, history);
 	let expires = Math.floor(Date.now() / 1000) + EXP_SEC;
 	let hash = ethers.solidityPackedKeccak256(
 		['address', 'uint64', 'bytes32', 'bytes32'],
@@ -100,11 +116,11 @@ async function handle_ccip(req, reply) {
 	let sig = SIGNING_KEY.sign(hash);
 	let sig_data = ethers.concat([sig.r, sig.s, Uint8Array.of(sig.v)]);
 	data = ABI_CODER.encode(['bytes', 'uint64', 'bytes'], [sig_data, expires, result]);
-	log(history.toString());
+	router.log(history.toString());
 	return reply.json({data});
 }
 
-async function handle_ccip_call(sender, data, history) {
+async function handle_ccip_call(router, sender, data, history) {
 	try {
 		let method = data.slice(0, 10);
 		let func = CCIP_ABI.getFunction(method);
@@ -115,13 +131,13 @@ async function handle_ccip_call(sender, data, history) {
 				let labels = labels_from_dns_encoded(ethers.getBytes(args.name));
 				let name = labels.join('.');
 				history.add(`resolve(${safe_str(name)})`);
-				let record = await fetch_record({labels, name, sender}); 
+				let record = await router.fetch_record({labels, name, sender, router});
 				return await handle_resolve(record, args.data, history);
 				// returns without additional encoding
 			}
 			case 'multicall(bytes)': {
 				history.add(`multicall`);
-				args = [await Promise.all(args.calls.map(x => handle_ccip_call(sender, x, history.next()).catch(encode_error)))];
+				args = [await Promise.all(args.calls.map(x => handle_ccip_call(router, sender, x, history.next()).catch(encode_error)))];
 				break;
 			}
 			default: new Error('unreachable');

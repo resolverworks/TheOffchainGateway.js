@@ -13,9 +13,9 @@
 		"raffy": {
 			"$eth": "0x51050ec063d393217B436747617aD1C2285Aeeee"
 		},
-		"sub": {
+		"alice": {
 			".": {
-				"name": "Subdomain",
+				"name": "alice",
 				"avatar": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/US_Navy_040730-N-1234E-002_PCU_Virginia_%28SSN_774%29_returns_to_the_General_Dynamics_Electric_Boat_shipyard.jpg/1200px-US_Navy_040730-N-1234E-002_PCU_Virginia_%28SSN_774%29_returns_to_the_General_Dynamics_Electric_Boat_shipyard.jpg",
 				"$eth": "0x000000000000000000000000000000000000dEaD",
 				"$btc": "bc1qjqg9slurvjukfl92wp58y94480fvh4uc2pwa6n",
