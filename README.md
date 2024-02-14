@@ -38,7 +38,7 @@ Simple Offchain ENS CCIP-Read Gateway in JS
 
 * uses [`Node/Record/Address`](./utils/tree.js) architecture
 * async loads [`tree.json`](./storage/json/tree.json)
-```json
+```js
 {
 	// (optional) basenames are subtracted from the incoming name
 	"basenames": ["raffy.xyz", "raffy.eth"], 
