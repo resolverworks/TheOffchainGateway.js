@@ -2,7 +2,6 @@ import {createServer, HTTPError} from './utils/http.js';
 import {log, is_address, is_hex, labels_from_dns_encoded, safe_str, coin_name} from './utils/utils.js';
 import {HTTP_PORT, PRIVATE_KEY, ROUTER_MAP, THE_RESOLVER_ADDRESS, EXP_SEC} from './config.js';
 import {History} from './utils/History.js';
-import {Router} from './utils/Router.js';
 import {ethers} from 'ethers';
 
 import './routes.js';
@@ -39,14 +38,14 @@ const http = createServer(async (req, reply) => {
 				if (router) {
 					switch (rest.join('/')) {
 						case 'tree': {
-							return reply.json(await Router.root(router));
+							return reply.json(await router.require_root());
 						}
 						case 'names': {
-							let root = await Router.root(router);
+							let root = await router.require_root();
 							return reply.json([...root.find_nodes()].map(x => x.name));
 						}
 						case 'flat': {
-							let root = await Router.root(router);
+							let root = await router.require_root();
 							let flat = {};
 							for (let node of root.find_nodes()) {
 								if (node.rec) {

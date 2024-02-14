@@ -6,7 +6,7 @@ Simple Offchain DNS and ENS CCIP-Read Gateway in JS powered by [TheOffchainResol
 * update [`config.js`](./config.js)
 	* set private key
 	* set server port and endpoint path
-* update [`routes.js`]('./routes.js)
+* update [`routes.js`](./routes.js)
 * start server: `node app.js`
 * for **DNS**:
 	* set `TXT` to `ENS1 $THE_RESOLVER_ADDRESS $YOUR_SIGNER $YOUR_ENDPOINT`
@@ -17,7 +17,7 @@ Simple Offchain DNS and ENS CCIP-Read Gateway in JS powered by [TheOffchainResol
 ## Routers
 
  * The `slug` is the `POST` endpoint path `/slug`
- * You can use [multiple routers.](./routes.js)
+ * You can use [multiple routers](./routes.js) at once.
  * Routers that support [`fetch_root()`](./utils/Router.js) have a JSON API:
 	* `GET /${slug}/root` &rarr; tree-like JSON
 	* `GET /${slug}/flat` &rarr; flat-like JSON
