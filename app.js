@@ -18,7 +18,8 @@ const RESOLVER_ABI = cache_abi(new ethers.Interface([
 	'function text(bytes32 node, string key) external view returns (string)',
 	'function contenthash(bytes32 node) external view returns (bytes)',
 	'function pubkey(bytes32 node) external view returns (bytes32, bytes32)',
-	'function multicall(bytes[] calls) external view returns (bytes[])'	
+	'function ABI(bytes32 node, uint256 contentTypes) external view returns (uint256, bytes memory)',
+	'function multicall(bytes[] calls) external view returns (bytes[])',
 ]));
 
 const http = createServer(async (req, reply) => {
@@ -52,7 +53,7 @@ const http = createServer(async (req, reply) => {
 			}
 			case 'POST': {
 				if (url.pathname === HTTP_ENDPOINT) {
-					return handle_ccip(req, reply);
+					return await handle_ccip(req, reply);
 				}
 				throw new HTTPError(404, 'file not found');
 			}
@@ -74,11 +75,12 @@ const http = createServer(async (req, reply) => {
 const {fetch_record, fetch_root} = await import(STORAGE);
 if (!fetch_record) throw new Error(`expected fetch_record()`);
 await http.start_listen(HTTP_PORT);
-log(`Listening on ${http.address().port}`);
-log(`Endpoint: ${HTTP_ENDPOINT}`);
-log(`Signer: ${ethers.computeAddress(SIGNING_KEY)}`);
-log(`Storage: ${STORAGE}`);
-log(`Supports fetch_root(): ${!!fetch_root}`);
+console.log(`Listening on ${http.address().port}`);
+console.log(`Endpoint: ${HTTP_ENDPOINT}`);
+console.log(`Signer: ${ethers.computeAddress(SIGNING_KEY)}`);
+console.log(`Storage: ${STORAGE}`);
+console.log(`Storage supports fetch_root(): ${!!fetch_root}`);
+RESOLVER_ABI.forEachFunction(f => console.log(`Supports [${f.selector}] ${f.__name}`));
 log('Ready!');
 
 // https://eips.ethereum.org/EIPS/eip-3668
@@ -138,6 +140,10 @@ async function handle_resolve(record, calldata, history) {
 		if (!func) throw new Error(`unsupported resolve() method: ${method}`);
 		let args = RESOLVER_ABI.decodeFunctionData(func, calldata);
 		switch (func.__name) {
+			case 'ABI(bytes32,uint256)': {
+				args = [0, '0x'];
+				break;
+			}
 			case 'addr(bytes32)': {
 				history.add(`addr()`);
 				let value = await record?.addr?.(60);

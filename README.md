@@ -1,5 +1,5 @@
 # TheOffchainGateway.js
-Simple Offchain ENS CCIP-Read Gateway in JS
+Simple Offchain DNS and ENS CCIP-Read Gateway in JS
 
 *under construction*
 
@@ -13,7 +13,7 @@ Simple Offchain ENS CCIP-Read Gateway in JS
 * for **DNS**:
 	* set `TXT` to `ENS1 $THE_RESOLVER_ADDRESS $YOUR_SIGNER $YOUR_ENDPOINT`
 * for **ENS**:
-	* set `PublicResolver.text("$YOUR_NAME, "ccip.context")` to `$YOUR_SIGNER $YOUR_ENDPOINT`
+	* set `PublicResolver.text($YOUR_NAME, "ccip.context")` to `$YOUR_SIGNER $YOUR_ENDPOINT`
 	* set `ENS.resolver("$YOUR_NAME")` to `$THE_RESOLVER_ADDRESS`
 
 ## Storage Profiles
