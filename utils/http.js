@@ -37,7 +37,7 @@ IncomingMessage.prototype.read_json = async function() {
 	try {
 		return JSON.parse(await this.read_body());
 	} catch (cause) {
-		throw new Error('malformed JSON', {cause});
+		throw new HTTPError(400, 'malformed JSON', {cause});
 	}
 };
 

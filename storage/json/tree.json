@@ -1,11 +1,14 @@
 {
 	"basenames": ["raffy.xyz"],
+	"reverse": "rev",
+	"index": { "label": "_", "limit": 100 },
 	"root": {
 		".": {
 			"name": "Offchain Resolver Demo",
 			"avatar": "https://discuss.ens.domains/uploads/db9688/original/1X/8dff9ce9c14b40a5c82a00f4cf47ed9b4b43a06d.png",
 			"$eth": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-			"#ipfs": "bafybeiawq7pbt4krnopfmcvymvp2uz4ohibd5p7ugskkybvdmwa2v7evpy"
+			"#ipfs": "bafybeiawq7pbt4krnopfmcvymvp2uz4ohibd5p7ugskkybvdmwa2v7evpy",
+			"#pubkey": { "x": 123, "y": 456 }
 		},
 		"raffy": {
 			"$eth": "0x51050ec063d393217B436747617aD1C2285Aeeee"
@@ -20,7 +23,7 @@
 				"$doge": "DQ5kE8puJbqdCw424QXM6hR9rn1argyM6z",
 				"com.twitter": "adraffy"
 			},
-			"raffy ": {
+			"raffy raff adraffy": {
 				"$eth": "0x51050ec063d393217B436747617aD1C2285Aeeee",
 				"avatar": "https://raffy.antistupid.com/ens.jpg"
 			}
