@@ -28,22 +28,23 @@ Simple Offchain ENS CCIP-Read Gateway in JS
 
 * sync loads [`flat.json`](./storage/json/flat.json)
 * reloads on change
-* uses [`Node/Record`](./utils/tree.js) architecture
+* uses [`Tree`](./utils/tree.js) architecture
 	* automatic `JSON` endpoints:
 		* http://$server/root — tree `{label: record}`
 		* http://$server/names — flat list of names
 		* http://$server/flat — flat `{name: record}`
 
-### [storage/json/tree.js](./storage/json/tree.js)
+### [storage/json/tree.js](./storage/json/tree.js) (Default)
 
-* uses [`Node/Record/Address`](./utils/tree.js) architecture
+* uses [`Tree`](./utils/tree.js) architecture
 * async loads [`tree.json`](./storage/json/tree.json)
 ```js
 {
-	// (optional) basenames are subtracted from the incoming name
+	// (optional) basenames are elided from the queried name
 	"basenames": ["raffy.xyz", "raffy.eth"], 
-	// (optional) if enabled, all $eth are reversable [hex].[reverse].[basename]
-	"reverse": "rev", 
+	// (optional) if enabled, all $eth addresses are queriable as [hex].[reverse].[basename]
+	// eg. {"$eth": "0x1234abcd"} + {"reverse": "rev"} => 1234abcd.rev.raffy.xyz
+	"reverse": "addr.reverse", 
 	// (optional) if enabled, "[label].name" will have a "description" equal to it's labels
 	// eg. [a.x.eth, b.x.eth] => text(_.x.eth, "description") = "a, b"
 	"index": { "label": "_", "limit": 100 },

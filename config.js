@@ -14,7 +14,7 @@ export const EXP_SEC = 60;
 export const THE_RESOLVER_ADDRESS = '0xa4407E257Aa158C737292ac95317a29b4C90729D';
 
 // storage backend
-export const STORAGE = './storage/json/flat.js';
+//export const STORAGE = './storage/json/flat.js';
 //export const STORAGE = './storage/json/flat2.js';
-//export const STORAGE = './storage/json/tree.js';
+export const STORAGE = './storage/json/tree.js';
 //export const STORAGE = './storage/mirror.js';

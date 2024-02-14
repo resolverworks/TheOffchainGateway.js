@@ -1,6 +1,6 @@
 {
 	"basenames": ["raffy.xyz"],
-	"reverse": "rev",
+	"reverse": "addr.reverse",
 	"index": { "label": "_", "limit": 100 },
 	"root": {
 		".": {
