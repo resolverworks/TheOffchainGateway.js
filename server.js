@@ -49,10 +49,8 @@ const http = createServer(async (req, reply) => {
 				if (router) {
 					let {sender, data: request} = await read_json(req);
 					let {data, history} = await handleCCIPRead({
-						sender, request,
-						getRecord(x) { return router.fetch_record(x); },
-						resolver: THE_OFFCHAIN_RESOLVER,
-						signingKey,
+						sender, request, signingKey, resolver: THE_OFFCHAIN_RESOLVER,
+						getRecord(x) { return router.fetch_record(x); }
 					});
 					router.log(history.toString());
 					return write_json(reply, {data});
@@ -106,7 +104,7 @@ async function read_body(req) {
 async function read_json(req) {
 	try {
 		return JSON.parse(await read_body(req));
-	} catch (cause) {
-		throw new RESTError(400, 'malformed JSON');
+	} catch (err) {
+		throw new RESTError(400, 'malformed JSON', err);
 	}
 }
