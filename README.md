@@ -89,5 +89,6 @@ Tree format explained:
 
 ### [Airtable](./routers/airtable.js) Router
 * Requires [airtable.com](https://airtable.com/) account
+* Example: [table](https://airtable.com/appzYI39knUZdO88N/shrkNXbY8tHEFk2Ew/tbl1osSFBUef6Wjof)
 
 ### Mainnet On-chain ".eth" [Mirror](./routers/mirror.js) Router
