@@ -34,7 +34,7 @@ export class Node extends Map {
 		try {
 			if (typeof json !== 'object' || Array.isArray(json)) throw new Error('expected object');
 			let rec = json[LABEL_SELF];
-			this.rec = Record.from_json(rec || json);
+			this.rec = Record.from(rec || json);
 			if (rec) {
 				for (let [ks, v] of Object.entries(json)) {
 					ks = ks.trim();

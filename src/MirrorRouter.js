@@ -1,8 +1,8 @@
-import {Router} from '../utils/Router.js';
-import {Record} from '../utils/Record.js';
-import {Address} from '../utils/Address.js';
-import {SmartCache} from '../utils/SmartCache.js';
-import {is_null_hex} from '../utils/utils.js';
+import {Router} from './Router.js';
+import {Record} from './Record.js';
+import {Address} from './Address.js';
+import {SmartCache} from './SmartCache.js';
+import {is_null_hex} from './utils.js';
 import {ethers} from 'ethers';
 
 const RESOLVER_IFACE = new ethers.Interface([
@@ -45,7 +45,7 @@ export class MirrorRouter extends Router {
 		], provider);
 	}
 	async fetch_record(info) {
-		let name = this.extract(info);
+		let name = await this.extract(info);
 		return this.cache.get(name, 10000, x => this.resolve(x));
 	}
 	async resolve(name) {

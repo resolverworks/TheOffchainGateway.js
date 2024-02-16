@@ -1,8 +1,6 @@
-import {MirrorRouter} from '../routers/MirrorRouter.js';
-import {ethers} from 'ethers';
+import R from '../routers/mirror.js';
 
-let mirror = new MirrorRouter({
-	provider: new ethers.CloudflareProvider()
-});
+let rec = await R.fetch_record({labels: ['raffy']});
 
-console.log(await mirror.resolve('raffy.eth').then(r => r.toJSON()));
+console.log(rec);
+console.log(rec.toJSON());

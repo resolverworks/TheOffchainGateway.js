@@ -1,12 +1,12 @@
-import {Node} from '../utils/Node.js';
-import {Record} from '../utils/Record.js';
-import {Router} from '../utils/Router.js';
+import {Node} from './Node.js';
+import {Record} from './Record.js';
+import {Router} from './Router.js';
+import {watch} from 'node:fs';
 
 export class NodeRouter extends Router {
 	constructor({slug, reverse = 'addr.reverse', index = 100}) {
 		super(slug);
 		this.reload = true;
-		this.reloader = () => this.reload = true;
 		this.loading = null;
 		this.loaded = null;
 
@@ -55,7 +55,7 @@ export class NodeRouter extends Router {
 		if (this.reverse) {
 			let rnode = root.create(this.reverse);
 			for (let rec of root.find_records()) {
-				let address = rec.get(60);
+				let address = rec.get(60); // TODO: assuming mainnet
 				if (!address) continue;
 				let label = address.input.slice(2).toLowerCase();
 				if (!rnode.has(label)) { // use the first match
@@ -74,12 +74,19 @@ export class NodeRouter extends Router {
 				if (this.index && node.size <= this.index) { // upper bound
 					json.description = [...node.keys()].join(', ');
 				}
-				let inode = node.create('_');
-				inode.rec = Record.from_json(json, node);
+				let inode = node.create('_'); // TODO: customize
+				inode.rec = Record.from(json, node);
 				inode.hidden = true;
 			}
 		}
 		return {base, root};
 	}
-
+	watch_file(file, parser) {
+		let timer;
+		watch(file, () => {
+			clearTimeout(timer);
+			setTimeout(() => this.reload = true, 100);
+		}).unref();
+		this.loader = into => parser(file, into);
+	}
 }

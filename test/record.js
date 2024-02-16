@@ -1,4 +1,4 @@
-import {Record} from '../utils/Record.js';
+import {Record} from '../src/Record.js';
 
 let rec = new Record();
 rec.put('name', 'raffy');

@@ -3,7 +3,7 @@ import {bytes32_from} from './utils.js';
 import {Address} from './Address.js';
 
 export class Record extends Map {
-	static from_json(json) {
+	static from(json) {
 		let self = new this();
 		for (let [k, v] of Object.entries(json)) {
 			self.put(k, v);
