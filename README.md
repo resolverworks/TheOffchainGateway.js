@@ -19,7 +19,7 @@ Offchain CCIP-Read Gateway in JS powered by [ezccip.js](https://github.com/resol
 	* `GET /${slug}/flat` &rarr; flat-like JSON
 	* `GET /${slug}/names` &rarr; JSON array of names with records
 
-### [Single](./routers/raffy.js) Record for ALL Names
+### [Fixed](./routers/fixed.js) Record for ALL Names
 
 * [`Record`](./src/Record.js) is a JSON description of an [ENS profile](./test/record.js)
 
@@ -40,15 +40,15 @@ Offchain CCIP-Read Gateway in JS powered by [ezccip.js](https://github.com/resol
 import {NodeRouter} from './routers/NodeRouter.js';
 
 let router = new NodeRouter({
-	slug: 'tree',
+    slug: 'tree',
 
-	// (optional) if enabled, all $eth addresses are queriable as [hex].[reverse].[basename]
-	// eg. {"$eth": "0x1234abcd"} + {"reverse": "rev"} => 1234abcd.rev.raffy.xyz
-	reverse: 'reverse.name'
+    // (optional) if enabled, all $eth addresses are queriable as [hex].[reverse].[basename]
+    // eg. {"$eth": "0x1234abcd"} + {"reverse": "rev"} => 1234abcd.rev.raffy.xyz
+    reverse: 'reverse.name'
 
-	// (optional) if an integer, "_.name" will have a "description" equal to its children
-	// eg. [a.x.eth, b.x.eth] => text(_.x.eth, "description") = "a, b"
-	index: Infinity
+    // (optional) if an integer, "_.name" will have a "description" equal to its children
+    // eg. [a.x.eth, b.x.eth] => text(_.x.eth, "description") = "a, b"
+    index: Infinity
 });
 ```
 Tree format explained:

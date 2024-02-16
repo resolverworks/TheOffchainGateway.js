@@ -2,7 +2,7 @@ import {Router} from '../src/Router.js';
 import {Record} from '../src/Record.js';
 
 export default Router.from({
-	slug: 'raffy',
+	slug: 'fixed',
 	fetch_record() {
 		return Record.from({
 			name: 'Raffy',
