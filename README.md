@@ -47,6 +47,9 @@ Offchain CCIP-Read Gateway in JS powered by [ezccip.js](https://github.com/resol
 * Database: [`tree.json`](./examples/tree.json)
 * Example: ENS [`tree.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#tree.debug.eth)
 * Example: ENS [`💎️.tree.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#💎️.tree.debug.eth)
+* Example: ENS [`_.tree.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#_.tree.debug.eth) — *autoindex of [root]*
+* Example: ENS [`51050ec063d393217b436747617ad1c2285aeeee.addr.reverse.tree.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#51050ec063d393217b436747617ad1c2285aeeee.addr.reverse.tree.debug.eth) — *reverse of 0x5105*
+* JSON API: [`/tree/`](https://raffy.xyz/tog/tree/tree) [`/flat/`](https://raffy.xyz/tog/tree/flat) [`/names/`](https://raffy.xyz/tog/tree/names)
 
 ```js
 import {NodeRouter} from './routers/NodeRouter.js';
@@ -102,7 +105,8 @@ Tree format explained:
 ### [Airtable](./routers/airtable.js) Router
 * Requires [airtable.com](https://airtable.com/) account → view [table](https://airtable.com/appzYI39knUZdO88N/shrkNXbY8tHEFk2Ew/tbl1osSFBUef6Wjof)
 * Example: ENS [`1.airtable.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#1.airtable.debug.eth)
-* Example: DNS [`air1.raffy.xyz`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#air1.raffy.xyz)
+* Example: ENS [`2.airtable.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#2.airtable.debug.eth)
+* Example: DNS [`air3.raffy.xyz`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#air3.raffy.xyz)
 
 ### Mainnet On-chain ".eth" [Mirror](./routers/mirror.js) Router
 
@@ -111,5 +115,5 @@ Tree format explained:
 
 ## [Coinbase](./routers/coinbase.js) Exchange Rate Router
 
-* Example: [`eth.coinbase.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#eth.coinbase.debug.eth`)
-* Example: [`btc.coinbase.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#btc.coinbase.debug.eth`)
+* Example: [`eth.coinbase.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#eth.coinbase.debug.eth)
+* Example: [`btc.coinbase.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#btc.coinbase.debug.eth)
