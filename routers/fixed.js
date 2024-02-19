@@ -5,7 +5,8 @@ export default Router.from({
 	slug: 'fixed',
 	fetch_record() {
 		return Record.from({
-			name: 'Raffy',
+			name: 'Hello from Fixed Router!',
+			location: 'Internet',
 			description: new Date().toLocaleString(),
 			avatar: 'https://raffy.antistupid.com/ens.jpg',
 			$eth: '0x51050ec063d393217B436747617aD1C2285Aeeee'

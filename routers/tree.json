@@ -1,5 +1,5 @@
 {
-	"basenames": ["raffy.xyz"],
+	"basenames": ["raffy.xyz", "tree.debug.eth"],
 	"reverse": "addr.reverse",
 	"index": { "label": "_", "limit": 100 },
 	"root": {
@@ -11,6 +11,12 @@
 			"#pubkey": { "x": 123, "y": 456 }
 		},
 		"raffy": {
+			"$eth": "0x51050ec063d393217B436747617aD1C2285Aeeee"
+		},
+		"💎️": {
+			"name": "💎️",
+			"description": "💎️💎️💎️",
+			"avatar": "https://cdn.britannica.com/78/170778-131-D35E060F/Reflections-diamond.jpg",
 			"$eth": "0x51050ec063d393217B436747617aD1C2285Aeeee"
 		},
 		"alice": {
