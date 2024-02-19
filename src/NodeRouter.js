@@ -18,8 +18,9 @@ export class NodeRouter extends Router {
 		let {root} = await this.get();
 		return root;
 	}
-	async fetch_record({labels}) {
+	async fetch_record({name}) {
 		let {root, base} = await this.get();
+		let labels = name.split('.');
 		let take = labels.length; // use full name
 		for (let i = take-1; i >= 0; i--) {
 			base = base.get(labels[i]);
@@ -60,6 +61,7 @@ export class NodeRouter extends Router {
 				let label = address.input.slice(2).toLowerCase();
 				if (!rnode.has(label)) { // use the first match
 					rnode.create(label).rec = rec;
+					rnode.create(`0x${label}`).rec = rec; // also 0x-prefixed
 				}
 			}
 		}
@@ -85,7 +87,7 @@ export class NodeRouter extends Router {
 		let timer;
 		watch(file, () => {
 			clearTimeout(timer);
-			setTimeout(() => this.reload = true, 100);
+			timer = setTimeout(() => this.reload = true, 100);
 		}).unref();
 		this.loader = into => parser(file, into);
 	}

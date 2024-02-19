@@ -3,7 +3,7 @@ import {handleCCIPRead, RESTError} from '@resolverworks/ezccip';
 import {ethers} from 'ethers';
 import {log} from './src/utils.js';
 import {Router} from './src/Router.js';
-import {HTTP_PORT, PRIVATE_KEY, ROUTERS, THE_OFFCHAIN_RESOLVER} from './config.js';
+import {HTTP_PORT, PRIVATE_KEY, ROUTERS, TOR_DEFAULT, TOR_CONTRACTS as TOR_DEPLOYS} from './config.js';
 
 const signingKey = new ethers.SigningKey(PRIVATE_KEY);
 
@@ -43,19 +43,23 @@ const http = createServer(async (req, reply) => {
 			}
 			case 'OPTIONS': return reply.setHeader('access-control-allow-headers', '*').end();
 			case 'POST': {
-				let slug = url.pathname.slice(1);
-				if (slug.endsWith('/')) slug = slug.slice(0, -1); // drop trailing slash
+				let path = url.pathname.slice(1);
+				if (path.endsWith('/')) path = path.slice(0, -1); // drop trailing slash
+				let [slug, deploy] = path.split('/');
 				let router = router_map.get(slug);
-				if (router) {
-					let {sender, data: request} = await read_json(req);
-					let {data, history} = await handleCCIPRead({
-						sender, request, signingKey, resolver: THE_OFFCHAIN_RESOLVER,
-						getRecord(x) { return router.fetch_record(x); }
-					});
-					router.log(history.toString());
-					return write_json(reply, {data});
+				if (!router) throw new RESTError(404, `slug "${slug}" not found`);
+				let resolver = TOR_DEFAULT;
+				if (deploy) {
+					resolver = TOR_DEPLOYS[deploy];
+					if (!resolver) throw new RESTError(404, `resolver "${deploy}" not found`);
 				}
-				throw new RESTError(404, `slug "${slug}" not found`);
+				let {sender, data: request} = await read_json(req);
+				let {data, history} = await handleCCIPRead({
+					sender, request, signingKey, resolver,
+					getRecord(x) { return router.fetch_record(x); }
+				});
+				router.log(history.toString());
+				return write_json(reply, {data});
 			}
 			default: throw new RESTError(400, 'unsupported http method');
 		}
@@ -86,7 +90,6 @@ http.listen(HTTP_PORT).once('listening', () => {
 	console.log(`Endpoints: ${[...router_map.keys()].join(' ')}`);
 	console.log(`Listening on ${http.address().port}`);
 });
-
 
 function write_json(reply, json) {
 	let buf = Buffer.from(JSON.stringify(json));

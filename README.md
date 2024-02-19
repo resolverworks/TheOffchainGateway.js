@@ -3,30 +3,37 @@ Offchain CCIP-Read Gateway in JS powered by [ezccip.js](https://github.com/resol
 
 ## Instructions
 
-* update [`config.js`](./config.js)
-	* set private key
-	* set server port
-	* pick [routers](./routers/)
-* start server: `npm run start`
-* [setup context](https://github.com/resolverworks/TheOffchainResolver.sol?tab=readme-ov-file#context-format)
+* Update [`config.js`](./config.js)
+	* Set private key
+	* Set server port
+	* Pick [routers](./routers/)
+* Start server: `npm run start`
+	* Endpoint: `https://.../${slug}(/resolver)?`
+		* Default: `/${slug}` →  `TOR_DNS_MAINNET`
+		* Specific: `/${slug}/eg` → `TOR_ENS_GOERLI` (see config)
+* [Setup context](https://github.com/resolverworks/TheOffchainResolver.sol?tab=readme-ov-file#context-format)
 
 ## Routers
 
  * The `slug` is the `POST` endpoint path `/${slug}`
  * You can use multiple routers at once.
  * Routers that support [`fetch_root()`](./utils/Router.js) like [`NodeRouter`](./src/NodeRouter.js) automatically have a JSON API:
-	* `GET /${slug}/root` &rarr; tree-like JSON
-	* `GET /${slug}/flat` &rarr; flat-like JSON
-	* `GET /${slug}/names` &rarr; JSON array of names with records
+	* `GET /${slug}/root` → tree-like JSON
+	* `GET /${slug}/flat` → flat-like JSON
+	* `GET /${slug}/names` → JSON array of names with records
 
 ### [Fixed](./routers/fixed.js) Record for ALL Names
 
 * [`Record`](./src/Record.js) is a JSON description of an [ENS profile](./test/record.js)
+* Example: [`raffy.xyz`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#raffy.xyz)
 
 ### [Simple](./routers/simple.js) `{name: addr(60)}` Database
-* Example: [`simple.json`](./routers/simple.json) 
+* Database: [`simple.json`](./routers/simple.json) 
+* Example: [`bob.raffy.xyz`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#bob.raffy.xyz)
 
 ### [Random](./routers/random.js) Address Router
+* Example: [`random.raffy.xyz`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#random.raffy.xyz)
+
 
 ### [Tree](./routers/tree.js) Database
 * Automatic reload after modification
@@ -34,7 +41,8 @@ Offchain CCIP-Read Gateway in JS powered by [ezccip.js](https://github.com/resol
 * Supports multiple basenames
 * Supports reverse names
 * Supports auto-index (think index.html for ENS)
-* Example: [`tree.json`](./examples/tree.json)
+* Database: [`tree.json`](./examples/tree.json)
+* Example: [`alice.raffy.xyz`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#alice.raffy.xyz)
 
 ```js
 import {NodeRouter} from './routers/NodeRouter.js';
@@ -85,10 +93,18 @@ Tree format explained:
 ```
 ### [Flat](./routers/flat.js) Database
 * Like [Tree](#auto-reloading-tree-database) but uses a flat file format.
-* Example: [`flat.json`](./routers/flat.json)
+* Example Database: [`flat.json`](./routers/flat.json)
+
 
 ### [Airtable](./routers/airtable.js) Router
 * Requires [airtable.com](https://airtable.com/) account
-* Example: [table](https://airtable.com/appzYI39knUZdO88N/shrkNXbY8tHEFk2Ew/tbl1osSFBUef6Wjof)
+* View [table](https://airtable.com/appzYI39knUZdO88N/shrkNXbY8tHEFk2Ew/tbl1osSFBUef6Wjof)
+* [`air1.raffy.xyz`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#air1.raffy.xyz)/ [`air2.raffy.xyz`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#air2.raffy.xyz)
 
 ### Mainnet On-chain ".eth" [Mirror](./routers/mirror.js) Router
+
+* Example: [`raffy.mirror.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#raffy.mirror.debug.eth) ↔ [`raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#raffy.eth)
+
+## [Coinbase](./routers/coinbase.js) Exchange Rate Router
+
+* Example: [`eth.coinbase.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#eth.coinbase.debug.eth`)

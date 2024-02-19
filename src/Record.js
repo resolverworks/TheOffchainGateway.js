@@ -49,6 +49,9 @@ export class Record extends Map {
 	pubkey() {
 		return this.get(Record.PUBKEY);
 	}
+	name(name) {
+		return this.get(Record.NAME);
+	}
 	toJSON() {
 		return Object.fromEntries([...this].map(([k, v]) => {
 			if (k === Record.CONTENTHASH) {
@@ -65,13 +68,13 @@ export class Record extends Map {
 		}));
 	}
 }
-Object.defineProperty(Record, 'CONTENTHASH', {
-	value: '#contenthash',
-	writable: false,
-	configurable: false,
-});
-Object.defineProperty(Record, 'PUBKEY', {
-	value: '#pubkey',
-	writable: false,
-	configurable: false,
-});
+define('CONTENTHASH');
+define('PUBKEY');
+define('NAME');
+function define(key, val) {
+	Object.defineProperty(Record, key, {
+		value: `#${val || key.toLowerCase()}`,
+		writable: false,
+		configurable: false,
+	});
+}

@@ -26,3 +26,29 @@ export function bytes32_from(x) {
 export function split_norm(s) {
 	return s ? ethers.ensNormalize(s).split('.') : [];
 }
+
+export function nth_label(s, skip = 0) {
+	if (!s) return;
+	//return s.split('.').at(skip)
+	if (skip < 0) {
+		let last = s.length;
+		let prev = s.lastIndexOf('.');
+		while (skip < -1) {
+			if (prev == -1) return;
+			last = prev;
+			prev = s.lastIndexOf('.', last - 1);
+			++skip;
+		}
+		return prev < 0 ? s.slice(0, last) : s.slice(prev + 1, last); 
+	} else {
+		let last = 0;
+		let next = s.indexOf('.');
+		while (skip > 0) {
+			if (next == -1) return;
+			last = next + 1;
+			next = s.indexOf('.', last);
+			--skip;
+		}
+		return next < 0 ? s.slice(last) : s.slice(last, next);
+	}
+}

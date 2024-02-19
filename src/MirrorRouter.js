@@ -31,9 +31,9 @@ const FIELDS = [
 ];
 
 export class MirrorRouter extends Router {
-	constructor({slug, extract, provider}) {
+	constructor({slug, rewrite, provider}) {
 		super(slug);
-		this.extract = extract;
+		this.rewrite = rewrite;
 		this.cache = new SmartCache();
 
 		// contracts
@@ -45,11 +45,12 @@ export class MirrorRouter extends Router {
 		], provider);
 	}
 	async fetch_record(info) {
-		let name = await this.extract(info);
+		let name = await this.rewrite(info);
 		return this.cache.get(name, 10000, x => this.resolve(x));
 	}
 	async resolve(name) {
-		let node = ethers.namehash(name);
+		let node = ethers.namehash(name); // warning: this normalizes
+		// TODO: this is only onchain
 		let target = await this.ens.resolver(node);
 		if (is_null_hex(target)) return;
 		let calls = FIELDS.map(f => {
