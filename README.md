@@ -46,9 +46,10 @@ Offchain CCIP-Read Gateway in JS powered by [ezccip.js](https://github.com/resol
 * Supports auto-index (think index.html for ENS)
 * Database: [`tree.json`](./examples/tree.json)
 * Example: ENS [`tree.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#tree.debug.eth)
-* Example: ENS [`💎️.tree.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#💎️.tree.debug.eth)
-* Example: ENS [`_.tree.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#_.tree.debug.eth) — *autoindex of [root]*
-* Example: ENS [`51050ec063d393217b436747617ad1c2285aeeee.addr.reverse.tree.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#51050ec063d393217b436747617ad1c2285aeeee.addr.reverse.tree.debug.eth) — *reverse of 0x5105*
+	* [`💎️.tree.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#💎️.tree.debug.eth)
+	* [`adraffy.alice.tree.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#adraffy.alice.tree.debug.eth)
+	* *autoindex* [`_.tree.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#_.tree.debug.eth)
+	* *auto-reverse* [`51050ec063d393217b436747617ad1c2285aeeee.addr.reverse.tree.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#51050ec063d393217b436747617ad1c2285aeeee.addr.reverse.tree.debug.eth)
 * JSON API: [`/tree/`](https://raffy.xyz/tog/tree/tree) [`/flat/`](https://raffy.xyz/tog/tree/flat) [`/names/`](https://raffy.xyz/tog/tree/names)
 
 ```js
@@ -110,7 +111,7 @@ Tree format explained:
 
 ### Mainnet On-chain ".eth" [Mirror](./routers/mirror.js) Router
 
-* Example: [`raffy.mirror.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#raffy.mirror.debug.eth) ↔ [`raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#raffy.eth) 
+* Example: [`raffy.mirror.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#raffy.mirror.debug.eth) ↔ [`raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#raffy.eth) 
 * Example:  [`brantly.mirror.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#brantly.mirror.debug.eth) ↔ [`brantly.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#brantly.eth)
 
 ## [Coinbase](./routers/coinbase.js) Exchange Rate Router
