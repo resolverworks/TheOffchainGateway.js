@@ -1,6 +1,7 @@
 import {Router} from './Router.js';
 import {Record} from './Record.js';
 import {Address} from './Address.js';
+import {Contenthash} from './Contenthash.js';
 import {SmartCache} from './SmartCache.js';
 import {is_null_hex} from './utils.js';
 import {ethers} from 'ethers';
@@ -32,7 +33,7 @@ const FIELDS = [
 
 export class MirrorRouter extends Router {
 	constructor({slug, rewrite, provider}) {
-		super(slug);
+		super('pg');
 		this.rewrite = rewrite;
 		this.cache = new SmartCache();
 
@@ -68,13 +69,13 @@ export class MirrorRouter extends Router {
 			let {ok, data} = answers[i];
 			if (!ok) return;
 			if ((data.length - 2) & 63) return; // TODO: errors
-			if (is_null_hex(data)) return; // null
+			if (is_null_hex(data)) return; // null			
 			try {
 				let values = RESOLVER_IFACE.decodeFunctionResult(frag, data);
 				switch (f.type) {
 					case 'addr': rec.set(f.coin, Address.from_raw(f.coin, values[0])); break;
 					case 'text': rec.set(f.key, values[0]); break;
-					case 'contenthash': f.set(Record.CONTENTHASH, values[0]); break;
+					case 'contenthash': rec.set(Record.CONTENTHASH, Contenthash.from_raw(values[0])); break;
 				}
 			} catch (err) {
 			}

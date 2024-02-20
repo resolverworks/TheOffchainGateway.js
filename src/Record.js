@@ -1,6 +1,6 @@
-import {encode as encodeContentHash} from '@ensdomains/content-hash';
 import {bytes32_from} from './utils.js';
 import {Address} from './Address.js';
+import {Contenthash} from './Contenthash.js';
 
 export class Record extends Map {
 	static from(json) {
@@ -24,12 +24,7 @@ export class Record extends Map {
 			} else if (k === Record.PUBKEY) {
 				v = [bytes32_from(v.x), bytes32_from(v.y)];
 			} else if (k.startsWith('#')) {
-				let codec = k.slice(1);
-				v = {
-					input: v,
-					codec,
-					bytes: Buffer.from(encodeContentHash(codec, v), 'hex') // note: this has no 0x
-				};
+				v = Contenthash.from_parts(k.slice(1), v);
 				k = Record.CONTENTHASH;
 			}
 			this.set(k, v);
