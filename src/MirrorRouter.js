@@ -75,7 +75,7 @@ export class MirrorRouter extends Router {
 				switch (f.type) {
 					case 'addr': rec.set(f.coin, Address.from_raw(f.coin, values[0])); break;
 					case 'text': rec.set(f.key, values[0]); break;
-					case 'contenthash': rec.set(Record.CONTENTHASH, Contenthash.from_raw(values[0])); break;
+					case 'contenthash': rec.setContenthash(values[0]); break;
 				}
 			} catch (err) {
 			}

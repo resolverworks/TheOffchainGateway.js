@@ -32,6 +32,9 @@ export class Record extends Map {
 			throw new Error(`Storing "${k0}": ${err.message}`, {cause: err});
 		}
 	}
+	setContenthash(x) {
+		this.set(Record.CONTENTHASH, Contenthash.from_raw(x));
+	}
 	text(key) {
 		return this.get(key);
 	}
