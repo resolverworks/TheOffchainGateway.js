@@ -33,7 +33,7 @@ const FIELDS = [
 
 export class MirrorRouter extends Router {
 	constructor({slug, rewrite, provider}) {
-		super('pg');
+		super(slug);
 		this.rewrite = rewrite;
 		this.cache = new SmartCache();
 
