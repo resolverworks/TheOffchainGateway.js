@@ -1,11 +1,12 @@
 {
 	".": {
-		"url": "https://github.com/adraffy/",
+		"url": "https://github.com/resolverworks/TheOffchainGateway.js/blob/main/ENS.json",
 		"avatar": "https://raffy.antistupid.com/ens.jpg",
 		"$eth": "0x51050ec063d393217B436747617aD1C2285Aeeee",
-		"com.github": "adraffy"
+		"com.github": "resolverworks"
 	},
 	"sub": {
+		"url": "https://github.com/resolverworks/TheOffchainGateway.js/blob/main/ENS.json",
 		"name": "I am sub",
 		"avatar": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Subway_bi_%282002%29.svg/2560px-Subway_bi_%282002%29.svg.png"
 	}
