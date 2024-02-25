@@ -6,7 +6,7 @@ Offchain CCIP-Read Gateway in JS powered by [**ezccip.js**](https://github.com/r
 * Update [`config.js`](./config.js)
 	* Set private key
 	* Set server port — *default* `8015`
-	* Pick [routers](./routers/) — *default* [`demo.js`](./routers/demo.js)
+	* Pick [routers](./routers/) — *default* [`demo.js`](./demo.js)
 * Start server: `npm run start`
 	* `slug` = specific router
 	* Default Endpoint: `/${slug}`
@@ -123,7 +123,6 @@ Tree format explained:
 ### [Routers as Subdomains](./routers/demo.js) → [`MultiRouter.js`](./src/MultiRouter.js)
 * Expose a list of routers as dynamic subdomains
 * `/multi` → `"a.b.flat.c"` == `/flat` → `"a.b.c"`
-
 
 ### [Wikipedia](./routers/wikipedia.js)
 
