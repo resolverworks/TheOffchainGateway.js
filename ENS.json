@@ -4,5 +4,9 @@
 		"avatar": "https://raffy.antistupid.com/ens.jpg",
 		"$eth": "0x51050ec063d393217B436747617aD1C2285Aeeee",
 		"com.github": "adraffy"
+	},
+	"sub": {
+		"name": "I am sub",
+		"avatar": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Subway_bi_%282002%29.svg/2560px-Subway_bi_%282002%29.svg.png"
 	}
 }
