@@ -1,4 +1,3 @@
-import {bytes32_from} from './utils.js';
 import {Address} from './Address.js';
 import {Contenthash} from './Contenthash.js';
 
@@ -11,10 +10,16 @@ export class Record extends Map {
 		return self;
 	}
 	put(k0, v) {
+		// accepts:
+		// * "name" => as-is
+		// * "$coin" => human-readable address
+		// * "#{ipns|ipfs...}" => human-readable contenthash()
+		// * "#contenthash" => pre-encoded contenthash()
+		// * "#pubkey" => {x, y}
 		// stores:
-		// * text(key)     == [string: string]
+		// * text(key)     == [string: string] 
 		// * addr(type)    == [$name: Address]
-		// * contenthash() == [Record.CONTENTHASH: {input, codec, bytes}] 
+		// * contenthash() == [Record.CONTENTHASH: Contenthash] 
 		// * pubkey()      == [Record.PUBKEY: [x, y]]
 		let k = k0;
 		try {
@@ -22,7 +27,9 @@ export class Record extends Map {
 				v = Address.from_input(k.slice(1), v); // throws
 				k = v.type;
 			} else if (k === Record.PUBKEY) {
-				v = [bytes32_from(v.x), bytes32_from(v.y)];
+				v = {x: BigInt(v.x), y: BigInt(v.y)};
+			} else if (k === Record.CONTENTHASH) {
+				v = Contenthash.from_raw(v);
 			} else if (k.startsWith('#')) {
 				v = Contenthash.from_parts(k.slice(1), v);
 				k = Record.CONTENTHASH;
@@ -31,9 +38,6 @@ export class Record extends Map {
 		} catch (err) {
 			throw new Error(`Storing "${k0}": ${err.message}`, {cause: err});
 		}
-	}
-	setContenthash(x) {
-		this.set(Record.CONTENTHASH, Contenthash.from_raw(x));
 	}
 	text(key) {
 		return this.get(key);
@@ -47,7 +51,7 @@ export class Record extends Map {
 	pubkey() {
 		return this.get(Record.PUBKEY);
 	}
-	name(name) {
+	name() {
 		return this.get(Record.NAME);
 	}
 	toJSON() {
@@ -55,9 +59,6 @@ export class Record extends Map {
 			if (k === Record.CONTENTHASH) {
 				k = `#${v.codec}`;
 				v = v.input;
-			} else if (k === Record.PUBKEY) {
-				let [x, y] = v;
-				v = {x, y};
 			} else if (v instanceof Address) {
 				k = `$${v.coder.name}`;
 				v = v.input;

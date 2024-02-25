@@ -4,7 +4,7 @@
 	"dependencies": {
 		"@ensdomains/address-encoder": "^1.0.0",
 		"@ensdomains/content-hash": "^3.0.0",
-		"@resolverworks/ezccip": "^0.0.2",
+		"@resolverworks/ezccip": "^0.0.4",
 		"ethers": "^6.11.1"
 	},
 	"scripts": {

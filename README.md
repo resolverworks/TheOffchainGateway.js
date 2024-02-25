@@ -1,44 +1,44 @@
 # TheOffchainGateway.js
-Offchain CCIP-Read Gateway in JS powered by [ezccip.js](https://github.com/resolverworks/ezccip.js/) and [TheOffchainResolver.sol](https://github.com/resolverworks/TheOffchainResolver.sol)
+Offchain CCIP-Read Gateway in JS powered by [**ezccip.js**](https://github.com/resolverworks/ezccip.js/) and [**TheOffchainResolver.sol**](https://github.com/resolverworks/TheOffchainResolver.sol)
 
 ## Instructions
 
 * Update [`config.js`](./config.js)
 	* Set private key
-	* Set server port
-	* Pick [routers](./routers/)
+	* Set server port — *default* `8015`
+	* Pick [routers](./routers/) — *default* [`demo.js`](./routers/demo.js)
 * Start server: `npm run start`
-	* Endpoint: `https://.../${slug}(/resolver)?`
-		* Default: `/${slug}` →  `TOR_DNS_MAINNET`
-		* Specific: `/${slug}/eg` → `TOR_ENS_GOERLI` (see config)
-* [Setup context](https://github.com/resolverworks/TheOffchainResolver.sol?tab=readme-ov-file#context-format)
+	* `slug` = specific router
+	* Default Endpoint: `/${slug}`
+	* Specific Deployment: `/${slug}/${deploy}`
+* [Setup context](https://github.com/resolverworks/TheOffchainResolver.sol#context-format)
 
 ## Routers
 
- * The `slug` is the `POST` endpoint path `/${slug}`
+ * [`Router`](./routers/fixed.js) is named (`slug`) function that given an name (`raffy.eth`) potentially returns a [`Record`](./test/Record.js)
  * You can use multiple routers at once.
  * Routers that support [`fetch_root()`](./utils/Router.js) like [`NodeRouter`](./src/NodeRouter.js) automatically have a JSON API:
 	* `GET /${slug}/root` → tree-like JSON
 	* `GET /${slug}/flat` → flat-like JSON
 	* `GET /${slug}/names` → JSON array of names with records
 
-### [Fixed](./routers/fixed.js) Record for ALL Names
+### [Fixed Record for ALL Names](./routers/fixed.js)
 
 * [`Record`](./src/Record.js) is a JSON description of an [ENS profile](./test/record.js)
 * Example: DNS [`raffy.xyz`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#raffy.xyz)
 * Example: ENS [`debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#debug.eth)
 
-### [Simple](./routers/simple.js) `{name: addr(60)}` Database
+### [Simple {name: address} Database](./routers/simple.js)
 * Database: [`simple.json`](./routers/simple.json) 
 * Example: DNS [`bob.raffy.xyz`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#bob.raffy.xyz)
 * Example: ENS: [`carl.simple.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#carl.simple.debug.eth)
 * Example: ENS: [`dave.simple.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#dave.simple.debug.eth)
 
-### [Random](./routers/random.js) Address Router
+### [Random Address](./routers/random.js)
 * Example: DNS [`random.raffy.xyz`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#random.raffy.xyz)
 * Example: ENS [`random.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#random.debug.eth)
 
-### [Tree](./routers/tree.js) Database
+### [Tree Database](./routers/tree.js) → [`NodeRouter.js`](./src/MultiRouter.js)
 * Automatic reload after modification
 * Automatic JSON API
 * Supports multiple basenames
@@ -99,22 +99,27 @@ Tree format explained:
     "basenames": ["raffy.xyz", "raffy.eth"]
 }
 ```
-### [Flat](./routers/flat.js) Database
+### [Flat Database](./routers/flat.js)
 * Like [Tree](#auto-reloading-tree-database) but uses a flat file format.
 * Example Database: [`flat.json`](./routers/flat.json)
 
-### [Airtable](./routers/airtable.js) Router
+### [Airtable](./routers/airtable.js) → [`AirtableRouter.js`](./src/AirtableRouter.js)
 * Requires [airtable.com](https://airtable.com/) account → view [table](https://airtable.com/appzYI39knUZdO88N/shrkNXbY8tHEFk2Ew/tbl1osSFBUef6Wjof)
 * Example: ENS [`1.airtable.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#1.airtable.debug.eth)
 * Example: ENS [`2.airtable.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#2.airtable.debug.eth)
 * Example: DNS [`air3.raffy.xyz`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#air3.raffy.xyz)
 
-### Mainnet On-chain ".eth" [Mirror](./routers/mirror.js) Router
+### [Mainnet On-chain ".eth" Mirror](./routers/mirror.js) → [`MirrorRouter.js`](./src/MirrorRouter.js)
 
 * Example: [`raffy.mirror.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#raffy.mirror.debug.eth) ↔ [`raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#raffy.eth) 
 * Example:  [`brantly.mirror.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#brantly.mirror.debug.eth) ↔ [`brantly.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#brantly.eth)
 
-## [Coinbase](./routers/coinbase.js) Exchange Rate Router
+### [Coinbase Exchange Rates](./routers/coinbase.js) 
 
 * Example: [`eth.coinbase.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#eth.coinbase.debug.eth)
 * Example: [`btc.coinbase.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#btc.coinbase.debug.eth)
+
+
+### [Routers as Subdomains](./routers/demo.js) → [`MultiRouter.js`](./src/MultiRouter.js)
+* Expose a list of routers as dynamic subdomains
+* `/multi` → `"a.b.flat.c"` == `/flat` → `"a.b.c"`

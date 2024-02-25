@@ -3,9 +3,10 @@ import {handleCCIPRead, RESTError} from '@resolverworks/ezccip';
 import {ethers} from 'ethers';
 import {log} from './src/utils.js';
 import {Router} from './src/Router.js';
-import {HTTP_PORT, PRIVATE_KEY, ROUTERS, TOR_DEFAULT, TOR_CONTRACTS as TOR_DEPLOYS} from './config.js';
+import {HTTP_PORT, PRIVATE_KEY, ROUTERS, TOR_DEPLOYS} from './config.js';
 
 const signingKey = new ethers.SigningKey(PRIVATE_KEY);
+const signer = ethers.computeAddress(signingKey);
 
 const router_map = new Map();
 
@@ -16,19 +17,21 @@ const http = createServer(async (req, reply) => {
 		switch (req.method) {
 			case 'GET': {
 				if (url.pathname === '/') {
-					return reply.end('Hello from TheOffchainGateway!');
+					return write_json(reply, {
+						greeting: 'Hello from TheOffchainGateway!',
+						signer,
+						routers: [...router_map.keys()],
+						TOR_DEPLOYS
+					});
 				}
 				let [_, slug, ...rest] = url.pathname.split('/');
 				let router = router_map.get(slug);
-				if (router) {
+				if (router?.fetch_root) {
+					let root = await router.fetch_root();
 					switch (rest.join('/')) {
-						case 'tree': return write_json(reply, await router.require_root());
-						case 'names': {
-							let root = await router.require_root();
-							return write_json(reply, [...root.find_nodes()].map(x => x.name));
-						}
+						case 'tree': return write_json(reply, root);
+						case 'names': return write_json(reply, [...root.find_nodes()].map(x => x.name));
 						case 'flat': {
-							let root = await router.require_root();
 							let flat = {};
 							for (let node of root.find_nodes()) {
 								if (node.rec) {
@@ -48,11 +51,8 @@ const http = createServer(async (req, reply) => {
 				let [slug, deploy] = path.split('/');
 				let router = router_map.get(slug);
 				if (!router) throw new RESTError(404, `slug "${slug}" not found`);
-				let resolver = TOR_DEFAULT;
-				if (deploy) {
-					resolver = TOR_DEPLOYS[deploy];
-					if (!resolver) throw new RESTError(404, `resolver "${deploy}" not found`);
-				}
+				let resolver = TOR_DEPLOYS[deploy ?? ''];
+				if (!resolver) throw new RESTError(404, `resolver "${deploy}" not found`);
 				let {sender, data: request} = await read_json(req);
 				let {data, history} = await handleCCIPRead({
 					sender, request, signingKey, resolver,
@@ -79,15 +79,16 @@ for (let r of ROUTERS) {
 	if (!(r instanceof Router)) throw new Error('expected Router');
 	if (router_map.has(r.slug)) throw new Error(`duplicate slug: ${r.slug}`);
 	router_map.set(r.slug, r);
-	await r.fetch_root?.();
+	await r.init?.();
 	r.log(`ready`);
 }
 if (!router_map.size) throw new Error(`expected a Router`);
 
 // start server
 http.listen(HTTP_PORT).once('listening', () => {
-	console.log(`Signer: ${ethers.computeAddress(signingKey)}`);
-	console.log(`Endpoints: ${[...router_map.keys()].join(' ')}`);
+	console.log(`Signer: ${signer}`);
+	console.log('Routers:',  [...router_map.keys()]);
+	console.log('Deploys:', TOR_DEPLOYS);
 	console.log(`Listening on ${http.address().port}`);
 });
 

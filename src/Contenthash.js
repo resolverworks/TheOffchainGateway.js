@@ -9,8 +9,8 @@ export class Contenthash {
 		let codec = getCodec(hex);
 		return new this(codec, Buffer.from(hex, 'hex'));
 	}
-	static from_parts(codec, input) {
-		return new this(codec, Buffer.from(encode(codec, input), 'hex')); // note: this has no 0x
+	static from_parts(codec, s) {
+		return new this(codec, Buffer.from(encode(codec, s), 'hex')); // note: this has no 0x
 	}
 	constructor(codec, bytes) {
 		this.codec = codec;

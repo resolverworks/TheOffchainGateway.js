@@ -86,11 +86,11 @@ export class Node extends Map {
 		}
 		return v.join('.');
 	}
-	print(indent = 0) {
-		console.log(`${'  '.repeat(indent)}${this.label}`);
+	print(level = 0) {
+		console.log(`${'  '.repeat(level)}${this.label}`);
 		for (let x of this.values()) {
 			if (x.hidden) continue;
-			x.print(indent + 1);
+			x.print(level + 1);
 		}
 	}
 }

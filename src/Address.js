@@ -1,20 +1,38 @@
-import {getCoderByCoinName, getCoderByCoinType} from '@ensdomains/address-encoder';
+import {getCoderByCoinType, coinNameToTypeMap} from '@ensdomains/address-encoder';
 import {ethers} from 'ethers';
+
+const cache = new Map();
+
+export function $coin({type, name, evm}) {
+	if (name) {
+		type = coinNameToTypeMap[name];
+	} else if (typeof evm === 'number') {
+		type = evm + 0x80000000;
+	}
+	if (typeof type !== 'number') throw new Error('unable to derive coin codec');
+	let coder = cache.get(type);
+	if (!coder) {
+		coder = getCoderByCoinType(type);
+		cache.set(type, coder);
+	}
+	return coder;
+}
 
 export class Address {
 	static from_input(name, s) {
-		let coder = getCoderByCoinName(name); // throws
-		return new this(coder, s, coder.decode(s));
+		let coder = $coin({name});
+		return new this(coder, coder.decode(s));
 	}
 	static from_raw(type, x) {
-		let coder = getCoderByCoinType(type); // throws
-		let v = ethers.getBytes(x);
-		return new this(coder, coder.encode(v), v);
+		let coder = $coin({type});
+		return new this(coder, Buffer.from(ethers.getBytes(x)));
 	}
-	constructor(coder, input, bytes) {
+	constructor(coder, bytes) {
 		this.coder = coder;
-		this.input = input;
 		this.bytes = bytes;
+	}
+	get input() {
+		return this.coder.encode(this.bytes);
 	}
 	get type() {
 		return this.coder.coinType;

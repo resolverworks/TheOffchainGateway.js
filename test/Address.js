@@ -1,10 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {ethers} from 'ethers';
-import {Address} from '../src/Address.js';
-import {getCoderByCoinName} from '@ensdomains/address-encoder';
+import {Address, $coin} from '../src/Address.js';
 
-test('Address', async t => {
+test('Address', async T => {
 	let known = [
 		{
 			name: 'eth',
@@ -20,9 +19,13 @@ test('Address', async t => {
 		}
 	];
 	for (let x of known) {
-		await t.test(`${x.name} is ${x.type}`, () => assert(getCoderByCoinName(x.name).coinType === x.type));
-		await t.test(`${x.name} from input`, () => assert(0 === Buffer.compare(Address.from_input(x.name, x.input).bytes, ethers.getBytes(x.raw))));
-		await t.test(`${x.type} from raw`, () => assert(Address.from_raw(x.type, x.raw).input == x.input));
+		await T.test(`$${x.name}/${x.type}`, async TT => {
+			await TT.test('by name', () => assert($coin({type: x.type}).name === x.name));
+			await TT.test('by type', () => assert($coin({name: x.name}).coinType === x.type));
+			await TT.test('from_input', () => assert(0 === Buffer.compare(Address.from_input(x.name, x.input).bytes, ethers.getBytes(x.raw))));
+			await TT.test('from_raw', () => assert(Address.from_raw(x.type, x.raw).input == x.input));
+		});
+
 	}
 });
 

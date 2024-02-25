@@ -14,5 +14,7 @@ rec.put('#arweave', 'yBYkngZXGCQgYU-nUCwo5vns2ALUU0LXXZrCUlUUWkk');
 
 rec.put('#pubkey', {x: 1, y: 2});
 
+rec.put(Record.CONTENTHASH, '0xe301017012201687de19f1516b9e560ab8655faa678e3a023ebff43494ac06a36581aafc957e');
+
 console.log(rec);
 console.log(rec.toJSON());

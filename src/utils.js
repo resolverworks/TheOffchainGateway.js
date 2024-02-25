@@ -19,10 +19,6 @@ export function is_address(s) {
 	return typeof s === 'string' && s.length == 42 && is_hex(s);
 }
 
-export function bytes32_from(x) {
-	return '0x' + BigInt(x).toString(16).padStart(64, '0').slice(-64);
-}
-
 export function split_norm(s) {
 	return s ? ethers.ensNormalize(s).split('.') : [];
 }

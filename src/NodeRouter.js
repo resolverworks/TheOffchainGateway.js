@@ -14,6 +14,9 @@ export class NodeRouter extends Router {
 		this.reverse = reverse;
 		this.index = index;
 	}
+	async init() {
+		await this.fetch_root(); // ensure the database loads the first time
+	}
 	async fetch_root() {
 		let {root} = await this.get();
 		return root;

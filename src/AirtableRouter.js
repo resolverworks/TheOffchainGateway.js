@@ -1,6 +1,6 @@
-import {EVMAddressRecord} from './EVMAddressRecord.js';
-import {SmartCache} from './SmartCache.js';
 import {Router} from './Router.js';
+import {Record} from './Record.js';
+import {SmartCache} from './SmartCache.js';
 
 const NAME_FIELD = 'name';
 const ADDR60_FIELD = 'address';
@@ -29,7 +29,7 @@ export class AirtableRouter extends Router {
 		if (records.length) {
 			let [{fields: {address}}] = records;
 			this.log(`Found: ${name} = ${address}`);
-			return EVMAddressRecord.from(address);
+			return Record.from({$eth: address});
 		}
 	}
 }
