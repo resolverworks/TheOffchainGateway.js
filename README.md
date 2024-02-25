@@ -18,9 +18,9 @@ Offchain CCIP-Read Gateway in JS powered by [**ezccip.js**](https://github.com/r
  * [`Router`](./routers/fixed.js) is named (`slug`) function that given an name (`raffy.eth`) potentially returns a [`Record`](./test/Record.js)
  * You can use multiple routers at once.
  * Routers that support [`fetch_root()`](./utils/Router.js) like [`NodeRouter`](./src/NodeRouter.js) automatically have a JSON API:
-	* `GET /${slug}/root` → tree-like JSON
-	* `GET /${slug}/flat` → flat-like JSON
-	* `GET /${slug}/names` → JSON array of names with records
+	* [`GET /${slug}/root`](https://raffy.xyz/tog/tree/tree) → tree-like JSON
+	* [`GET /${slug}/flat`](https://raffy.xyz/tog/tree/flat) → flat-like JSON
+	* [`GET /${slug}/names`](https://raffy.xyz/tog/tree/names) → JSON array of names with records
 
 ### [Fixed Record for ALL Names](./routers/fixed.js)
 
@@ -120,7 +120,12 @@ Tree format explained:
 * Example: [`eth.coinbase.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli&records#eth.coinbase.debug.eth)
 * Example: [`btc.coinbase.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli&records#btc.coinbase.debug.eth)
 
-
 ### [Routers as Subdomains](./routers/demo.js) → [`MultiRouter.js`](./src/MultiRouter.js)
 * Expose a list of routers as dynamic subdomains
 * `/multi` → `"a.b.flat.c"` == `/flat` → `"a.b.c"`
+
+
+### [Wikipedia](./routers/wikipedia.js)
+
+* Example: [`ethereum.wiki.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli&records#ethereum.wiki.debug.eth)
+* Example: [`vitalik.wiki.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli&records#vitalik.wiki.debug.eth)

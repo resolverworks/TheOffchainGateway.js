@@ -21,4 +21,4 @@ export const PRIVATE_KEY = '0xbd1e630bd00f12f0810083ea3bd2be936ead3b2fa84d1bd669
 export const HTTP_PORT = 8015;
 
 // routers
-export {ROUTERS} from './routers/demo.js';
+export {ROUTERS} from './demo.js';

@@ -93,7 +93,7 @@ http.listen(HTTP_PORT).once('listening', () => {
 });
 
 function write_json(reply, json) {
-	let buf = Buffer.from(JSON.stringify(json));
+	let buf = Buffer.from(JSON.stringify(json, (_, x) => typeof x === 'bigint' ? '0x' + x.toString(16).padStart(64, '0') : x));
 	reply.setHeader('content-length', buf.length);
 	reply.setHeader('content-type', 'application/json');
 	reply.end(buf);
