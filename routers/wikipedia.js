@@ -5,12 +5,13 @@ import {nth_label} from '../src/utils.js';
 async function wikipedia(title) {
 	let res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${title}`);
 	let json = await res.json();
-	let {titles: {normalized}, thumbnail, description, extract} = json;
+	let {titles: {canonical, normalized}, thumbnail, description, extract} = json;
 	return {
 		name: normalized, 
 		avatar: thumbnail.source, 
 		notice: description,
-		description: extract
+		description: extract,
+		url: `https://en.wikipedia.org/wiki/${canonical}`
 	};
 }
 
