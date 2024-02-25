@@ -11,7 +11,7 @@ export class Node {
 	find(namefrag: string): Node | undefined;
 	create(namefrag: string): Node;
 	ensure_child(label: string): Node;
-	import_from_json(any): void;
+	import_from_json(any: any): void;
 
 	find_records(): Iterator<Record>;
 	find_nodes(): Iterator<Node>;

@@ -4,9 +4,11 @@ import {Record} from './Record.js';
 const LABEL_SELF = '.';
 
 export class Node extends Map {
+	static root(name) {
+		return new this(`[${name || 'root'}]`);
+	}
 	constructor(label, parent) {
 		super();
-		if (!parent && !label.startsWith('[')) throw new Error('expected [bracketed] name');
 		this.label = label;
 		this.parent = parent || null;
 		this.rec = null;

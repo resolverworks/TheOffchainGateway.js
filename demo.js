@@ -7,8 +7,20 @@ import airtable from './routers/airtable.js';
 import mirror from './routers/mirror.js';
 import coinbase from './routers/coinbase.js';
 import wikipedia from './routers/wikipedia.js';
+import github from './routers/github.js';
 
-const routers = [fixed, random, simple, flat, tree, airtable, mirror, coinbase, wikipedia];
+const routers = [
+	fixed, 
+	random, 
+	simple, 
+	flat, 
+	tree, 
+	airtable, 
+	mirror, 
+	coinbase, 
+	wikipedia, 
+	github
+];
 
 // this exposes the other routers as subdomains
 // eg. /multi [a.b].(simple).[c.d] => /simple [a.b.c.d]

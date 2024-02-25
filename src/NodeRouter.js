@@ -52,8 +52,8 @@ export class NodeRouter extends Router {
 		return this.loaded;
 	}
 	async load() {
-		let base = new Node('[base]');
-		let root = new Node('[root]');
+		let root = Node.root();
+		let base = Node.root('base')
 		await this.loader({root, base});
 		// create reverse names
 		if (this.reverse) {
