@@ -1,4 +1,5 @@
 import {Router} from './Router.js';
+import {Record} from './Record.js';
 import {Address} from './Address.js';
 import {SmartCache} from './SmartCache.js';
 import {is_null_hex} from './utils.js';

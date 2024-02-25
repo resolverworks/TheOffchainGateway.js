@@ -116,8 +116,9 @@ Tree format explained:
 
 ### [Coinbase Exchange Rates](./routers/coinbase.js) 
 
-* Example: [`eth.coinbase.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#eth.coinbase.debug.eth)
-* Example: [`btc.coinbase.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli#btc.coinbase.debug.eth)
+* Embedded current price in description 
+* Example: [`eth.coinbase.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli&records#eth.coinbase.debug.eth)
+* Example: [`btc.coinbase.debug.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html?goerli&records#btc.coinbase.debug.eth)
 
 
 ### [Routers as Subdomains](./routers/demo.js) → [`MultiRouter.js`](./src/MultiRouter.js)
