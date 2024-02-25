@@ -25,6 +25,7 @@ export default Router.from({
 			parts.pop(); // "github"
 			// [sub][user][repo]
 			for (let n = 1; n <= 2; n++) {
+				if (n == parts.length) break;
 				let repo = parts.slice(parts.length - n).join('.');
 				let user = parts[parts.length - (n + 1)];
 				let rest = parts.slice(0, -(n + 1)).join('.');
