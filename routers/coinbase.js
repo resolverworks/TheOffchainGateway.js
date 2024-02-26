@@ -32,11 +32,10 @@ export default Router.from({
 		let rel = tick === 'eth' ? 'BTC' : 'ETH';
 		if (price) {
 			return Record.from({
-				name: `$${format_price(price)}`,
+				name: `$${format_price(price)} — ${format_price(price / rates.get(rel.toLowerCase()))} per ${rel}`,
 				description: `As of ${rates.t}`,
 				avatar: `https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/32%402x/color/${tick}@2x.png`,
 				url: `https://www.coinbase.com/price/${tick}`,
-				notice: `${format_price(price / rates.get(rel.toLowerCase()))} per ${rel}`,
 			});
 		} else if (tick === 'coinbase') { // hack for index
 			return Record.from({
