@@ -8,6 +8,7 @@ import mirror from './routers/mirror.js';
 import coinbase from './routers/coinbase.js';
 import wikipedia from './routers/wikipedia.js';
 import github from './routers/github.js';
+import reverse from './routers/reverse.js';
 
 const routers = [
 	fixed, 
@@ -19,7 +20,8 @@ const routers = [
 	mirror, 
 	coinbase, 
 	wikipedia, 
-	github
+	github,
+	reverse
 ];
 
 // this exposes the other routers as subdomains

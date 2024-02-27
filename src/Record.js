@@ -26,6 +26,8 @@ export class Record extends Map {
 			if (k.startsWith('$')) {
 				v = Address.from_input(k.slice(1), v); // throws
 				k = v.type;
+			} else if (k === Record.NAME) {
+				// do nothing
 			} else if (k === Record.PUBKEY) {
 				v = {x: BigInt(v.x), y: BigInt(v.y)};
 			} else if (k === Record.CONTENTHASH) {

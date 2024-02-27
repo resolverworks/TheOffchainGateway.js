@@ -12,6 +12,7 @@ const router_map = new Map();
 
 const http = createServer(async (req, reply) => {
 	try {
+		let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
 		let url = new URL(req.url, 'http://a');
 		reply.setHeader('access-control-allow-origin', '*');
 		switch (req.method) {
@@ -56,7 +57,7 @@ const http = createServer(async (req, reply) => {
 				let {sender, data: request} = await read_json(req);
 				let {data, history} = await handleCCIPRead({
 					sender, request, signingKey, resolver,
-					getRecord(x) { return router.fetch_record(x); }
+					getRecord(x) { return router.fetch_record({...x, ip}); }
 				});
 				router.log(history.toString());
 				return write_json(reply, {data});
