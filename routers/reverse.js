@@ -10,6 +10,7 @@ export default Router.from({
 		if (!name.endsWith(SUFFIX)) return;
 		name = '0x' + name.slice(0, -SUFFIX.length);
 		if (!is_address(name)) return;
-		return Record.from({[Record.NAME]: `${ip}.${new Date().toISOString().slice(0, -5).replaceAll(/\D/g, '-')}`});
+		let date = new Date().toISOString().slice(0, -5).replaceAll(/\D/g, '-');
+		return Record.from({[Record.NAME]: `${ip}.${date}`});
 	}
 });
