@@ -58,10 +58,10 @@ export default Router.from({
 			}
 			let json = await res.json();
 			let root = Node.root();
+			root.import_from_json(json);
 			if (!root.rec) root.rec = new Record(); // rare
 			if (!root.rec.has('com.github')) root.rec.set('com.github', account);
 			if (!root.rec.has('url')) root.rec.set(`https://github.com/${account === repo ? account : path}`);
-			root.import_from_json(json);
 			return root;
 		});
 	}
