@@ -6,7 +6,12 @@ export const TOR_DEPLOYS = {
 	's': '0x9Ec7f2ce83fcDF589487303fA9984942EF80Cb39', // Sepolia
 
 	// experimental
-	'g2': '0x8e1af190fB76198b86C83c5EFe2Fb0ADC1cbD50F' // Goerli
+	'g2': '0x8e1af190fB76198b86C83c5EFe2Fb0ADC1cbD50F', // Goerli
+
+	// old
+	'd1': '0xa4407E257Aa158C737292ac95317a29b4C90729D', // DNS Mainnet
+	'ds': '0x179Be112b24Ad4cFC392eF8924DfA08C20Ad8583', // DNS Sepolia
+	'eg': '0x2e513399b2c5337e82a0a71992cbd09b78170843', // ENS Goerli
 };
 
 // routers
