@@ -62,7 +62,6 @@ export default Router.from({
 			if (!root.rec) root.rec = new Record(); // rare
 			if (!root.rec.has('com.github')) root.rec.set('com.github', account);
 			if (!root.rec.has('url')) root.rec.set('url', `https://github.com/${account === repo ? account : path}`);
-			console.log(root.rec);
 			return root;
 		});
 	}
