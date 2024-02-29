@@ -3,9 +3,9 @@ import {handleCCIPRead, RESTError} from '@resolverworks/ezccip';
 import {ethers} from 'ethers';
 import {log} from './src/utils.js';
 import {Router} from './src/Router.js';
-import {HTTP_PORT, PRIVATE_KEY, ROUTERS, TOR_DEPLOYS} from './config.js';
+import {ROUTERS, TOR_DEPLOYS} from './config.js';
 
-const signingKey = new ethers.SigningKey(PRIVATE_KEY);
+const signingKey = new ethers.SigningKey(process.env.PRIVATE_KEY); // throws
 const signer = ethers.computeAddress(signingKey);
 
 const router_map = new Map();
@@ -86,7 +86,7 @@ for (let r of ROUTERS) {
 if (!router_map.size) throw new Error(`expected a Router`);
 
 // start server
-http.listen(HTTP_PORT).once('listening', () => {
+http.listen(parseInt(process.env.HTTP_PORT)).once('listening', () => {
 	console.log(`Signer: ${signer}`);
 	console.log('Routers:',  [...router_map.keys()]);
 	console.log('Deploys:', TOR_DEPLOYS);

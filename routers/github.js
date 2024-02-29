@@ -14,37 +14,55 @@ const record0 = Record.from({
 });
 
 export default Router.from({
-	slug: 'github',  
-	async fetch_record({name}) {
-		// this is a hack since to work as demo
-		// since this could be hosted under anyones domain
+	slug: 'github',
+	async fetch_record({name, multi}) {
+		if (!multi) {
+			// unknown basename
+			// TODO: register under "github.eth"
+			return; 
+		}
+		return this.find_record(name) || record0;
+	},
+	async find_record(name) {
+		if (!name) return;
 		let parts = name.split('.');
-		let index = parts.lastIndexOf('github');
-		if (index == -1) return;
-		parts = parts.slice(0, index);
-		// [sub][user][repo]
-		for (let n = 1; n <= 2; n++) {
-			if (n == parts.length) break;
+		let account = parts.pop();
+		if (!/^[a-z0-9-]+$/.test(account)) return;
+		try {
+			let root = await this.read_ens_json(account, account);
+			let rest = parts.join('.');
+			this.log(`account: ${account} => ${rest}`);
+			let node = root.find(rest);
+			return node?.rec;
+		} catch (err) {
+		}	
+		for (let n = 1; n <= 2; n++) { // number of periods allowed in repo name
+			if (n > parts.length) break;
 			let repo = parts.slice(parts.length - n).join('.');
-			let user = parts[parts.length - (n + 1)];
-			let rest = parts.slice(0, -(n + 1)).join('.');
-			let path = `${user}/${repo}`;
 			try {
-				let root = await cache.get(path, 10000, async () => {
-					let res = await fetch(`https://github.com/${user}/${repo}/raw/main/ENS.json`);
-					if (!res.ok) throw new Error(`http ${res.status}`);
-					let json = await res.json();
-					let root = Node.root();
-					root.import_from_json(json);
-					return root;
-				});	
-				this.log(`${path} => ${rest}`);
+				let root = await this.read_ens_json(account, repo);
+				let rest = parts.slice(0, -n).join('.');
+				this.log(`repo: ${account}/${repo} => ${rest}`);
 				let node = root.find(rest);
 				return node?.rec;
 			} catch (err) {
-				this.log(`no repo: ${path} ${err.message}`)
 			}
 		}
-		return record0;
+	},
+	async read_ens_json(account, repo) {
+		return cache.get(`${account}/${repo}`, 10000, async path => {
+			let res = await fetch(`https://github.com/${path}/raw/main/ENS.json`);
+			if (!res.ok) {
+				this.log(`not found: ${path}`);
+				throw new Error(`HTTP ${res.status}`);
+			}
+			let json = await res.json();
+			let root = Node.root();
+			if (!root.rec) root.rec = new Record(); // rare
+			if (!root.rec.has('com.github')) root.rec.set('com.github', account);
+			if (!root.rec.has('url')) root.rec.set(`https://github.com/${account === repo ? account : path}`);
+			root.import_from_json(json);
+			return root;
+		});
 	}
 });

@@ -2,6 +2,8 @@ export type JSONRecord = {[key: string]: any};
 
 export class Record extends Map {
 	static from(json: JSONRecord): Record;
+	constructor();
+	
 	toJSON(): JSONRecord;
 	put(key: string, value: any): void;
 
