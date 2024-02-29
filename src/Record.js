@@ -11,16 +11,18 @@ export class Record extends Map {
 	}
 	put(k0, v) {
 		// accepts:
-		// * "name" => as-is
+		// * "text" => string, unmodified
 		// * "$coin" => human-readable address
 		// * "#{ipns|ipfs...}" => human-readable contenthash()
 		// * "#contenthash" => pre-encoded contenthash()
 		// * "#pubkey" => {x, y}
+		// * "#name" => string, unmodified (TODO: enforce normalization?)
 		// stores:
 		// * text(key)     == [string: string] 
 		// * addr(type)    == [$name: Address]
 		// * contenthash() == [Record.CONTENTHASH: Contenthash] 
 		// * pubkey()      == [Record.PUBKEY: [x, y]]
+		// * name()        == [Record.NAME: string]
 		let k = k0;
 		try {
 			if (k.startsWith('$')) {
@@ -58,12 +60,17 @@ export class Record extends Map {
 	}
 	toJSON() {
 		return Object.fromEntries([...this].map(([k, v]) => {
-			if (k === Record.CONTENTHASH) {
-				k = `#${v.codec}`;
-				v = v.input;
-			} else if (v instanceof Address) {
+			if (v instanceof Address) {
 				k = `$${v.coder.name}`;
 				v = v.input;
+			} else if (k === Record.CONTENTHASH) {
+				k = `#${v.codec}`;
+				v = v.input;
+			} else if (k === Record.PUBKEY) {
+				v = {
+					x: json_big_int(v.x),
+					y: json_big_int(v.y)
+				};
 			}
 			return [k, v];
 		}));
@@ -78,4 +85,8 @@ function define(key, val) {
 		writable: false,
 		configurable: false,
 	});
+}
+
+function json_big_int(x) {
+	return '0x' + BigInt(x).toString(16).padStart(64, '0'); // TODO: reduce 0 padding
 }

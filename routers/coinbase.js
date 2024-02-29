@@ -26,7 +26,7 @@ async function fetch_rates() {
 export default Router.from({
 	slug: 'coinbase',
 	async fetch_record({name}) {
-		let rates = await cache.get('RATES', 60000, fetch_rates);
+		let rates = await cache.get('RATES', 30000, fetch_rates);
 		let tick = nth_label(name);
 		let price = rates.get(tick);
 		let rel = tick === 'eth' ? 'BTC' : 'ETH';

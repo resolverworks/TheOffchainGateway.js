@@ -1,5 +1,5 @@
 {
-	"basenames": ["raffy.xyz", "tree.debug.eth"],
+	"basenames": ["raffy.xyz"],
 	"reverse": "addr.reverse",
 	"index": { "label": "_", "limit": 100 },
 	"root": {

@@ -1,5 +1,6 @@
 import {getCoderByCoinType, coinNameToTypeMap} from '@ensdomains/address-encoder';
 import {ethers} from 'ethers';
+import {is_address} from './utils.js';
 
 const cache = new Map();
 
@@ -21,6 +22,9 @@ export function $coin({type, name, evm}) {
 export class Address {
 	static from_input(name, s) {
 		let coder = $coin({name});
+		if (is_address(s) && s == s.toLowerCase()) {
+			s = ethers.getAddress(s); // fix checksum bug
+		}
 		return new this(coder, coder.decode(s));
 	}
 	static from_raw(type, x) {
