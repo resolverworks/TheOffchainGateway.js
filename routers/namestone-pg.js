@@ -71,7 +71,7 @@ async function fetch_namestone(name) {
 
 export default Router.from({
 	slug: 'pg',
-	fetch_record({name, multi}) { 
-		return fetch_namestone(multi ?? name);
+	fetch_record({name}) { 
+		return fetch_namestone(name);
 	}
 });
