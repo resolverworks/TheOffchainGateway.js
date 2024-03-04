@@ -27,6 +27,14 @@ export default Router.from({
 	slug: 'coinbase',
 	async fetch_record({name}) {
 		let rates = await cache.get('RATES', 30000, fetch_rates);
+		if (!name) {
+			return Record.from({
+				name: 'Coinbase API over ENS',
+				notice: `${rates.size.toLocaleString()} symbols`,
+				description: [...rates.keys()].join(' '),
+				url: RATES_URL,
+			});
+		}
 		let tick = nth_label(name);
 		let price = rates.get(tick);
 		let rel = tick === 'eth' ? 'BTC' : 'ETH';
@@ -37,17 +45,9 @@ export default Router.from({
 				avatar: `https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/32%402x/color/${tick}@2x.png`,
 				url: `https://www.coinbase.com/price/${tick}`,
 			});
-		} else if (tick === 'coinbase') { // hack for index
-			return Record.from({
-				name: 'Coinbase API over ENS',
-				notice: `${rates.size.toLocaleString()} symbols`,
-				description: [...rates.keys()].join(' '),
-				url: RATES_URL,
-			});
 		}
 	}
 });
-
 
 // make fancy degen price
 function format_price(p, n = 4) {

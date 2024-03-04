@@ -50,16 +50,17 @@ const http = createServer(async (req, reply) => {
 				let path = url.pathname.slice(1);
 				if (path.endsWith('/')) path = path.slice(0, -1); // drop trailing slash
 				let [slug, deploy] = path.split('/');
+				deploy ||= '';
 				let router = router_map.get(slug);
 				if (!router) throw new RESTError(404, `slug "${slug}" not found`);
-				let resolver = TOR_DEPLOYS[deploy ?? ''];
+				let resolver = TOR_DEPLOYS[deploy];
 				if (!resolver) throw new RESTError(404, `resolver "${deploy}" not found`);
 				let {sender, data: request} = await read_json(req);
 				let {data, history} = await handleCCIPRead({
 					sender, request, signingKey, resolver,
 					getRecord(x) { return router.fetch_record({...x, ip}); }
 				});
-				router.log(history.toString());
+				router.log(deploy, history.toString());
 				return write_json(reply, {data});
 			}
 			default: throw new RESTError(400, 'unsupported http method');

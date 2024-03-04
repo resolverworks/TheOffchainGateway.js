@@ -7,6 +7,8 @@
 			"name": "Offchain Resolver Demo",
 			"avatar": "https://discuss.ens.domains/uploads/db9688/original/1X/8dff9ce9c14b40a5c82a00f4cf47ed9b4b43a06d.png",
 			"$eth": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
+			"$btc": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+			"url": "https://github.com/resolverworks/TheOffchainResolver.sol",
 			"#ipfs": "bafybeiawq7pbt4krnopfmcvymvp2uz4ohibd5p7ugskkybvdmwa2v7evpy",
 			"#pubkey": { "x": 123, "y": 456 }
 		},
