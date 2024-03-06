@@ -1,28 +1,18 @@
-import fixed from './routers/fixed.js';
-import random from './routers/random.js';
-import simple from './routers/simple.js';
-import flat from './routers/flat.js';
-import tree from './routers/tree.js';
-import airtable from './routers/airtable.js';
-import mirror from './routers/mirror.js';
-import coinbase from './routers/coinbase.js';
-import wikipedia from './routers/wikipedia.js';
-import github from './routers/github.js';
-import reverse from './routers/reverse.js';
 
 // all of these are optional
 const routers = [
-	fixed, 
-	random, 
-	simple, 
-	flat, 
-	tree, 
-	airtable, 
-	mirror, 
-	coinbase, 
-	wikipedia, 
-	github,
-	reverse
+	(await import('./routers/fixed.js')).default,
+	(await import('./routers/random.js')).default,
+	(await import('./routers/simple.js')).default,
+	(await import('./routers/flat.js')).default,
+	(await import('./routers/tree.js')).default,
+	(await import('./routers/airtable.js')).default,
+	(await import('./routers/mirror.js')).default,
+	(await import('./routers/coinbase.js')).default,
+	(await import('./routers/wikipedia.js')).default,
+	(await import('./routers/github.js')).default,
+	(await import('./routers/reverse.js')).default,
+	(await import('./routers/teamnick.js')).default,
 ];
 
 // requires postgres server
