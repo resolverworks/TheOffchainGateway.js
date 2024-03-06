@@ -49,8 +49,8 @@ export default Router.from({
 		let [subdomain] = await sql`SELECT * FROM subdomain WHERE domain_id = ${domain.id} AND name = ${name} LIMIT 1`;
 		if (!subdomain) return; // silent
 		let [texts, coins] = await Promise.all([
-			sql`SELECT * FROM subdomain_text_record WHERE subdomain_id = ${domain.id}`,
-			sql`SELECT * FROM subdomain_coin_type WHERE subdomain_id = ${domain.id}`,
+			sql`SELECT * FROM subdomain_text_record WHERE subdomain_id = ${subdomain.id}`,
+			sql`SELECT * FROM subdomain_coin_type WHERE subdomain_id = ${subdomain.id}`,
 		]);
 		let rec = new Record();
 		rec.set('notice', `ID(${domain.id}:${subdomain.id}) Created(${subdomain.created_at.toISOString()})`);
