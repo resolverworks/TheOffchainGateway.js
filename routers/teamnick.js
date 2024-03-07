@@ -45,9 +45,9 @@ export default Router.from({
 		if (!name || name.includes('.')) {
 			let supply = await cache.get('$count', CACHE_MS, () => contract.totalSupply());
 			return Record.from({
-				name: 'Team Nick',
+				name: `${supply.toLocaleString()} names registered`,
 				$base: CONTRACT,
-				description: `${supply.toLocaleString()} names`,
+				description: `Register a free ENS Subname on Base. Tradable on OpenSea!`,
 				location: BASENAME,
 				url: WEBSITE,
 			});
@@ -59,7 +59,7 @@ export default Router.from({
 		if (recordExists) {
 			return Record.from({
 				name: label,
-				description: `Owned by ${ethers.getAddress(ownerOf)}`,
+				description: `🔒️ ${ethers.getAddress(ownerOf)}`,
 				url: `https://teamnick.xyz/nft/${BigInt(node).toString(10)}`,
 				$eth,
 				avatar,
@@ -67,14 +67,14 @@ export default Router.from({
 		} else if (available) {
 			return Record.from({
 				name: label,
-				description: `${fullname(label)} is available!`,
+				description: `✅️ ${qq(label)} is available!`,
 				location: BASENAME,
 				url: WEBSITE,
 			});
 		} else {
 			return Record.from({
 				name: label,
-				description: `Name is too short.`,
+				description: `⚠️ ${qq(label)} is too short.`,
 				url: WEBSITE
 			});
 		}
@@ -97,3 +97,7 @@ export default Router.from({
 		return obj;
 	}
 });
+
+function qq(s) {
+	return `“${s}”`
+}
