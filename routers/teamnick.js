@@ -9,10 +9,6 @@ const WEBSITE = 'https://teamnick.xyz/';
 const BASENAME = 'teamnick.xyz';
 const CACHE_MS = 60000;
 
-function fullname(label) {
-	return `${label}.${BASENAME}`;
-}
-
 const cache = new SmartCache();
 const provider = new ethers.JsonRpcProvider('https://mainnet.base.org', 8453, {staticNetwork: true});
 const multicall = new ethers.Contract('0xcA11bde05977b3631167028862bE2a173976CA11', [
@@ -43,7 +39,7 @@ export default Router.from({
 	slug: 'teamnick',
 	async fetch_record({name}) {
 		if (!name || name.includes('.')) {
-			let supply = await cache.get('$count', CACHE_MS, () => contract.totalSupply());
+			let supply = await cache.get('#', CACHE_MS, () => contract.totalSupply());
 			return Record.from({
 				name: `${supply.toLocaleString()} names registered`,
 				$base: CONTRACT,
@@ -52,52 +48,55 @@ export default Router.from({
 				url: WEBSITE,
 			});
 		}
-		return cache.get(name, CACHE_MS, name => this.get_record(name));
+		return cache.get(name, CACHE_MS, name => this.create_record(name));
 	},
-	async get_record(label) {
-		let {node, addr: $eth, avatar, ownerOf, available, recordExists} = await this.fetch_storage(label);
+	async create_record(name) {
+		this.log(`Fetch: ${asciiize(name)}`);
+		let {node, addr: $eth, avatar, ownerOf, available, recordExists} = await fetch_storage(name);
 		if (recordExists) {
 			return Record.from({
-				name: label,
+				name,
 				description: `🔒️ ${ethers.getAddress(ownerOf)}`,
+				$eth, avatar,
 				url: `https://teamnick.xyz/nft/${BigInt(node).toString(10)}`,
-				$eth,
-				avatar,
 			});
 		} else if (available) {
 			return Record.from({
-				name: label,
-				description: `✅️ ${qq(label)} is available!`,
+				name,
+				description: `✅️ ${qq(name)} is available!`,
 				location: BASENAME,
 				url: WEBSITE,
 			});
 		} else {
 			return Record.from({
-				name: label,
-				description: `⚠️ ${qq(label)} is too short.`,
+				name,
+				description: `⚠️ ${qq(name)} is too short.`,
+				location: BASENAME,
 				url: WEBSITE
 			});
 		}
-	},
-	async fetch_storage(label) {
-		this.log(`Fetch: ${asciiize(label)}`)
-		let node = ethers.id(label);
-		let multi = await multicall.tryAggregate(false, calls.map(call => {
-			return {target: CONTRACT, data: abi.encodeFunctionData(call.fn, [call.name ? label: node])};
-		}));
-		let obj = Object.fromEntries(calls.map((call, i) => {
-			let [ok, data] = multi[i];
-			if (ok) {
-				let res = abi.decodeFunctionResult(call.fn, data);
-				if (res.length === 1) res = res[0];
-				return [call.fn.name, res];
-			}
-		}).filter(Boolean));
-		obj.node = node;
-		return obj;
 	}
 });
+
+async function fetch_storage(label) {
+	let node = ethers.id(label);
+	let multi = await multicall.tryAggregate(false, calls.map(call => {
+		return {target: CONTRACT, data: abi.encodeFunctionData(call.fn, [call.name ? label: node])};
+	}));
+	let rec = {node};
+	calls.forEach((call, i) => {
+		let [ok, data] = multi[i];
+		if (ok) {
+			let res = abi.decodeFunctionResult(call.fn, data);
+			if (res.length === 1) res = res[0];
+			rec[call.fn.name] = res;
+		}
+	});
+	return rec;
+}
 
 function qq(s) {
 	return `“${s}”`
 }
+
+//console.log(await fetch_storage('raffy'));
