@@ -46,7 +46,7 @@ export default Router.from({
 			let supply = await cache.get('$count', CACHE_MS, () => contract.totalSupply());
 			return Record.from({
 				name: 'Team Nick',
-				$eth: CONTRACT,
+				$base: CONTRACT,
 				description: `${supply.toLocaleString()} names`,
 				location: BASENAME,
 				url: WEBSITE,
