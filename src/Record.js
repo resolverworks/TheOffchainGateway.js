@@ -1,4 +1,4 @@
-import {Address} from './Address.js';
+import {Address, $coin} from './Address.js';
 import {Contenthash} from './Contenthash.js';
 
 export class Record extends Map {
@@ -26,19 +26,27 @@ export class Record extends Map {
 		let k = k0;
 		try {
 			if (k.startsWith('$')) {
-				v = Address.from_input(k.slice(1), v); // throws
-				k = v.type;
+				if (v) {
+					v = Address.from_input(k.slice(1), v);
+					k = v.type;
+				} else {
+					k = $coin({name: k.slice(1)}).coinType;
+				}
 			} else if (k === Record.NAME) {
 				// do nothing
 			} else if (k === Record.PUBKEY) {
-				v = {x: BigInt(v.x), y: BigInt(v.y)};
+				if (v) v = {x: BigInt(v.x), y: BigInt(v.y)};
 			} else if (k === Record.CONTENTHASH) {
-				v = Contenthash.from_raw(v);
+				if (v) v = Contenthash.from_raw(v);
 			} else if (k.startsWith('#')) {
-				v = Contenthash.from_parts(k.slice(1), v);
+				if (v) v = Contenthash.from_parts(k.slice(1), v);
 				k = Record.CONTENTHASH;
 			}
-			this.set(k, v);
+			if (v) {
+				this.set(k, v);
+			} else {
+				this.delete(k);
+			}
 		} catch (err) {
 			throw new Error(`Storing "${k0}": ${err.message}`, {cause: err});
 		}

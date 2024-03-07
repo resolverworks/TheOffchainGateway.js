@@ -3,6 +3,7 @@ import {Router} from '../src/Router.js';
 import {Record} from '../src/Record.js';
 import {SmartCache} from '../src/SmartCache.js';
 import {asciiize} from '@resolverworks/ezccip';
+import {is_null_hex} from '../src/utils.js';
 
 const CONTRACT = '0x7C6EfCb602BC88794390A0d74c75ad2f1249A17f';
 const WEBSITE = 'https://teamnick.xyz/';
@@ -86,10 +87,12 @@ async function fetch_storage(label) {
 	let rec = {node};
 	calls.forEach((call, i) => {
 		let [ok, data] = multi[i];
-		if (ok) {
+		if (ok && !is_null_hex(data)) {
 			let res = abi.decodeFunctionResult(call.fn, data);
 			if (res.length === 1) res = res[0];
-			rec[call.fn.name] = res;
+			if (res) {
+				rec[call.fn.name] = res;
+			}
 		}
 	});
 	return rec;
@@ -100,3 +103,6 @@ function qq(s) {
 }
 
 //console.log(await fetch_storage('raffy'));
+//console.log(await fetch_storage('raffy12345'));
+//console.log(await fetch_storage('a'));
+//console.log(Record.from({$eth: null}));
