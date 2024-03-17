@@ -1,18 +1,21 @@
-// TheOffchainResolver deployments
+// TOR deployments
 // https://github.com/resolverworks/TheOffchainResolver.sol
 export const TOR_DEPLOYS = {
 	 '': '0x828ec5bDe537B8673AF98D77bCB275ae1CA26D1f', // Mainnet
 	'g': '0x9b87849Aa21889343b6fB1E146f9F734ecFA9982', // Goerli
 	's': '0x9Ec7f2ce83fcDF589487303fA9984942EF80Cb39', // Sepolia
-	'a': '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512', // Anvil
 
 	// experimental
 	'g2': '0x8e1af190fB76198b86C83c5EFe2Fb0ADC1cbD50F', // Goerli
+	's2': '0xf93F7F8002BcfB285D44E9Ef82E711cCD0D502A2', // Sepolia
 
 	// old
 	'd1': '0xa4407E257Aa158C737292ac95317a29b4C90729D', // DNS Mainnet
 	'ds': '0x179Be112b24Ad4cFC392eF8924DfA08C20Ad8583', // DNS Sepolia
 	'eg': '0x2e513399b2c5337e82a0a71992cbd09b78170843', // ENS Goerli
+
+	// tunnel
+	'sot': '0xCa71342cB02714374e61e400f172FF003497B2c2', // Sepolia
 };
 
 // routers

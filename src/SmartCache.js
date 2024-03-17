@@ -1,5 +1,15 @@
 import {TimedCache} from './TimedCache.js';
 
+// SmartCache is a TimedCache with resolved promise results
+// and an additional map with pending promises
+// keyed input will return the same pending promise, while active
+// (which prevents duplicate inflight requests)
+// and return the same resolved result, until expired
+// the expectation is that:
+// * success is not an instanceof Error
+// * error is an instance of Error
+// although any return values work if they can be distinguished
+
 export class SmartCache {
 	constructor() {
 		this.active = new Map();

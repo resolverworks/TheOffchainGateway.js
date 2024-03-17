@@ -1,13 +1,13 @@
-import {Router} from '../src/Router.js';
-import {Record} from '../src/Record.js';
+import {Record} from '@resolverworks/enson';
 import {readFileSync} from 'node:fs';
 
-let simple = JSON.parse(readFileSync(new URL('./simple.json', import.meta.url)));
+let simple = new Map(Object.entries(JSON.parse(readFileSync(new URL('./simple.json', import.meta.url)))).map(([name, $eth]) => {
+	return [name, Record.from({$eth})];
+}));
 
-export default Router.from({
+export default {
 	slug: 'simple',
-	fetch_record({name}) {
-		let a = simple[name];
-		if (a) return Record.from({$eth: a});
+	resolve(name) {
+		return simple.get(name);
 	}
-});
+};

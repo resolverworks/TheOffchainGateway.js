@@ -1,8 +1,6 @@
-
-function clock() {
-	//return Date.now();
-	return performance.now();
-}
+// TimedCache is a keyed cache which stores [expiration, data]
+// entries are removed using a linear scan
+// invoked by a single deref'd timer that reschedules up to 20Hz
 
 export class TimedCache {
 	constructor() {
@@ -43,4 +41,9 @@ export class TimedCache {
 			this.fires = 0;
 		}
 	}
+}
+
+function clock() {
+	//return Date.now();
+	return performance.now();
 }

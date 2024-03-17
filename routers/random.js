@@ -1,14 +1,13 @@
-import {Router} from '../src/Router.js';
-import {Record} from '../src/Record.js';
+import {Record} from '@resolverworks/enson';
 import {ethers} from 'ethers';
 
-export default Router.from({
+export default {
 	slug: 'random',
-	fetch_record() {
+	resolve() {
 		return Record.from({
 			name: '🎲️',
 			description: 'I resolve to a random ethereum address!',
-			$eth: ethers.hexlify(ethers.randomBytes(20))
+			$eth: ethers.hexlify(ethers.randomBytes(20)),
 		});
 	}
-});
+};

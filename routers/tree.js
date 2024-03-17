@@ -1,13 +1,13 @@
 import {NodeRouter} from '../src/NodeRouter.js';
 import {readFile} from 'node:fs/promises';
 
-const router = new NodeRouter({slug: 'tree'});
+const router = new NodeRouter('tree');
 router.watch_file(new URL('./tree.json', import.meta.url), async (file, {root, base}) => {
 	// file was modified and needs reloaded
 	
 	// load "root" structure into root node
 	let json = JSON.parse(await readFile(file));
-	root.import_from_json(json.root);
+	root.import(json.root);
 
 	// optional basenames
 	let {basenames} = json;

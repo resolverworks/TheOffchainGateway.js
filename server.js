@@ -1,18 +1,24 @@
 import {createServer} from 'node:http';
-import {handleCCIPRead, RESTError} from '@resolverworks/ezccip';
+//import {EZCCIP, error_with} from '@resolverworks/ezccip';
+import {EZCCIP, error_with} from '../ezccip.js/src/index.js';
 import {ethers} from 'ethers';
 import {log} from './src/utils.js';
-import {Router} from './src/Router.js';
 import {ROUTERS, TOR_DEPLOYS} from './config.js';
+import {NodeRouter} from './src/NodeRouter.js';
+
+const PORT = parseInt(process.env.HTTP_PORT);
 
 const signingKey = new ethers.SigningKey(process.env.PRIVATE_KEY); // throws
 const signer = ethers.computeAddress(signingKey);
 
-const router_map = new Map();
+const routers = new Map();
+
+const ezccip = new EZCCIP();
+ezccip.enableENSIP10((name, context, history) => context.router.resolve(name, context, history));
 
 const http = createServer(async (req, reply) => {
+	let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
 	try {
-		let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
 		let url = new URL(req.url, 'http://a');
 		reply.setHeader('access-control-allow-origin', '*');
 		switch (req.method) {
@@ -21,29 +27,28 @@ const http = createServer(async (req, reply) => {
 					return write_json(reply, {
 						greeting: 'Hello from TheOffchainGateway!',
 						signer,
-						routers: [...router_map.keys()],
-						TOR_DEPLOYS
+						routers: [...routers.keys()],
+						TOR_DEPLOYS,
 					});
 				}
 				let [_, slug, ...rest] = url.pathname.split('/');
-				let router = router_map.get(slug);
-				if (router?.fetch_root) {
-					let root = await router.fetch_root();
+				let router = routers.get(slug);
+				if (router instanceof NodeRouter) {
+					let {root, base} = await router.loaded();
 					switch (rest.join('/')) {
+						case 'base': return write_json(reply, base);
 						case 'tree': return write_json(reply, root);
-						case 'names': return write_json(reply, [...root.find_nodes()].map(x => x.name));
+						case 'names': return write_json(reply, root.collect(x => x.name));
 						case 'flat': {
 							let flat = {};
-							for (let node of root.find_nodes()) {
-								if (node.rec) {
-									flat[node.name] = node.rec;
-								}
-							}
+							root.scan(x => { 
+								if (x.rec) flat[x.name] = x.record; 
+							});
 							return write_json(reply, flat);
 						}
 					}
 				}
-				throw new RESTError(404, 'file not found');
+				throw error_with('file not found', {status: 404});
 			}
 			case 'OPTIONS': return reply.setHeader('access-control-allow-headers', '*').end();
 			case 'POST': {
@@ -51,45 +56,46 @@ const http = createServer(async (req, reply) => {
 				if (path.endsWith('/')) path = path.slice(0, -1); // drop trailing slash
 				let [slug, deploy] = path.split('/');
 				deploy ||= '';
-				let router = router_map.get(slug);
-				if (!router) throw new RESTError(404, `slug "${slug}" not found`);
+				let router = routers.get(slug);
+				if (!router) throw error_with(`slug "${slug}" not found`, {status: 404, slug});
 				let resolver = TOR_DEPLOYS[deploy];
-				if (!resolver) throw new RESTError(404, `resolver "${deploy}" not found`);
-				let {sender, data: request} = await read_json(req);
-				let {data, history} = await handleCCIPRead({
-					sender, request, signingKey, resolver,
-					getRecord(x) { return router.fetch_record({...x, ip}); }
-				});
-				router.log(deploy, history.toString());
+				if (!resolver) throw error_with(`resolver "${deploy}" not found`, {status: 404});
+				let {sender, data: calldata} = await read_json(req);
+				let {data, history} = await ezccip.handleRead(sender, calldata, {signingKey, resolver, router, ip});
+				log(ip, `${router.slug}/${deploy}`, history.toString());
 				return write_json(reply, {data});
 			}
-			default: throw new RESTError(400, 'unsupported http method');
+			default: throw error_with('unsupported http method', {status: 405});
 		}
 	} catch (err) {
 		let status = 500;
 		let message = 'internal error';
-		if (err instanceof RESTError) {
+		if (Number.isInteger(err.status)) {
 			({status, message} = err);
 		}
-		log(req.method, req.url, err);
+		log(ip, req.method, req.url, err);
 		reply.statusCode = status;
 		write_json(reply, {message});
 	}
 });
 
 for (let r of ROUTERS) {
-	if (!(r instanceof Router)) throw new Error('expected Router');
-	if (router_map.has(r.slug)) throw new Error(`duplicate slug: ${r.slug}`);
-	router_map.set(r.slug, r);
-	await r.init?.();
-	r.log(`ready`);
+	try {
+		if (!r.slug || !/^[a-z0-9-]+$/.test(r.slug)) throw new Error('expected slug');
+		if (routers.has(r.slug)) throw new Error(`duplicate slug: ${r.slug}`);
+		routers.set(r.slug, r);
+		await r.init?.(ezccip);
+		log(r.slug, 'ready');
+	} catch (err) {
+		throw error_with('router init', {router: r}, err);
+	}
 }
-if (!router_map.size) throw new Error(`expected a Router`);
+if (!routers.size) throw new Error(`expected a Router`);
 
 // start server
-http.listen(parseInt(process.env.HTTP_PORT)).once('listening', () => {
+http.listen(PORT).once('listening', () => {
 	console.log(`Signer: ${signer}`);
-	console.log('Routers:',  [...router_map.keys()]);
+	console.log('Routers:',  [...routers.keys()]);
 	console.log('Deploys:', TOR_DEPLOYS);
 	console.log(`Listening on ${http.address().port}`);
 });

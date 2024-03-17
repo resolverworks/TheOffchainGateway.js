@@ -1,35 +1,38 @@
-import {Router} from './Router.js';
-import {Record} from './Record.js';
+import {Record} from '@resolverworks/enson';
+import {asciiize} from '@resolverworks/ezccip';
 import {SmartCache} from './SmartCache.js';
+import {log} from '../src/utils.js';
+import {ethers} from 'ethers';
 
-const NAME_FIELD = 'name';
-const ADDR60_FIELD = 'address';
-
-export class AirtableRouter extends Router {
-	constructor({slug, secret, base, dur = 10000}) {
-		super(slug);
+export class AirtableRouter {
+	constructor({slug,  secret, base, field = 'name', dur = 10000}) {
+		this.slug = slug;
 		this.secret = secret;
 		this.base = base;
+		this.field = field;
 		this.cache = new SmartCache();
 		this.dur = dur;
 	}
-	async fetch_record({name}) {
-		return this.cache.get(name, this.dur, x => this.lookup(x));
+	async resolve(name) {
+		let norm = ethers.ensNormalize(name);
+		if (norm && norm === name) {
+			return this.cache.get(norm, this.dur, x => this.lookup(x));
+		}
 	}
 	async lookup(name) {
+		log(`airtable: ${asciiize(name)}`);
 		let url = new URL(`https://api.airtable.com/v0/${this.base}/records`);
 		url.searchParams.set('maxRecords', 1);
-		url.searchParams.append('fields[]', ADDR60_FIELD);
-		url.searchParams.set('filterByFormula', `{${NAME_FIELD}}='${name}'`);
+		url.searchParams.set('filterByFormula', `{${this.field}}='${name}'`); // we norm above so this is safe
 		let res = await fetch(url, {
 			headers: {authorization: `Bearer ${this.secret}`}
 		});
 		if (!res.ok) throw new Error(`Airtable HTTP ${res.status}`); // TODO
 		let {records} = await res.json();
 		if (records.length) {
-			let [{fields: {address}}] = records;
-			this.log(`Found: ${name} = ${address}`);
-			return Record.from({$eth: address});
+			let {id, createdTime, fields} = records[0];
+			fields.notice = `ID(${id}) Created(${createdTime})`;
+			return Record.from(fields);
 		}
 	}
 }

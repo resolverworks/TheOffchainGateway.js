@@ -1,10 +1,11 @@
 {
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"type": "module",
 	"dependencies": {
 		"@ensdomains/address-encoder": "^1.0.0",
 		"@ensdomains/content-hash": "^3.0.0",
-		"@resolverworks/ezccip": "^0.0.4",
+		"@resolverworks/enson": "^0.0.5",
+		"@resolverworks/ezccip": "^0.0.8",
 		"ethers": "^6.11.1",
 		"postgres": "^3.4.3"
 	},

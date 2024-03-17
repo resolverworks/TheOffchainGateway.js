@@ -1,9 +1,7 @@
 import {AirtableRouter} from '../src/AirtableRouter.js';
 
+// example table:
 // https://airtable.com/appzYI39knUZdO88N/shrkNXbY8tHEFk2Ew/tbl1osSFBUef6Wjof
-// expects columns: [name, address]
-
-// TODO: this example is poo and needs more columns
 
 export default new AirtableRouter({
 	slug: 'airtable',

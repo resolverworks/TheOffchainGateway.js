@@ -13,6 +13,7 @@ const routers = [
 	(await import('./routers/github.js')).default,
 	(await import('./routers/reverse.js')).default,
 	(await import('./routers/teamnick.js')).default,
+	(await import('./routers/tunnel.js')).default,
 ];
 
 // requires postgres server
@@ -23,7 +24,6 @@ if (process.env.NAMESTONE_PG) {
 // (optional) this exposes the other routers as subdomains
 // this makes it easy to serve all the demos from one endpoint
 // eg. /multi [a.b].(simple).[c.d] => /simple [a.b.simple.c.d]
-import {MultiRouter} from './src/MultiRouter.js';
-const multi = new MultiRouter({slug: 'multi', routers});
+import {multirouter} from './src/MultiRouter.js';
 
-export const ROUTERS = [...routers, multi];
+export const ROUTERS = [...routers, multirouter(routers)];

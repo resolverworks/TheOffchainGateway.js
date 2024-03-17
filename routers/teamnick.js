@@ -1,9 +1,7 @@
 import {ethers} from 'ethers';
-import {Router} from '../src/Router.js';
-import {Record} from '../src/Record.js';
+import {Record} from '@resolverworks/enson';
 import {SmartCache} from '../src/SmartCache.js';
-import {asciiize} from '@resolverworks/ezccip';
-import {is_null_hex} from '../src/utils.js';
+import {is_null_hex, log} from '../src/utils.js';
 
 const CONTRACT = '0x7C6EfCb602BC88794390A0d74c75ad2f1249A17f';
 const WEBSITE = 'https://teamnick.xyz/';
@@ -36,9 +34,9 @@ for (let x of calls) {
 	x.fn = abi.getFunction(x.fn);
 }
 
-export default Router.from({
+export default {
 	slug: 'teamnick',
-	async fetch_record({name}) {
+	async resolve(name) {
 		if (!name || name.includes('.')) {
 			let supply = await cache.get('#', CACHE_MS, () => contract.totalSupply());
 			return Record.from({
@@ -49,40 +47,41 @@ export default Router.from({
 				url: WEBSITE,
 			});
 		}
-		return cache.get(name, CACHE_MS, name => this.create_record(name));
-	},
-	async create_record(name) {
-		this.log(`Fetch: ${asciiize(name)}`);
-		let {node, addr: $eth, avatar, ownerOf, available, recordExists} = await fetch_storage(name);
-		if (recordExists) {
-			return Record.from({
-				name,
-				description: `🔒️ ${ethers.getAddress(ownerOf)}`,
-				$eth, avatar,
-				url: `https://teamnick.xyz/nft/${BigInt(node).toString(10)}`,
-			});
-		} else if (available) {
-			return Record.from({
-				name,
-				description: `✅️ ${qq(name)} is available!`,
-				location: BASENAME,
-				url: WEBSITE,
-			});
-		} else {
-			return Record.from({
-				name,
-				description: `⚠️ ${qq(name)} is too short.`,
-				location: BASENAME,
-				url: WEBSITE
-			});
-		}
+		return cache.get(name, CACHE_MS, create_record);
 	}
-});
+};
 
-async function fetch_storage(label) {
+async function create_record(name) {
+	log(`teamnick:`, {name});
+	let {node, addr: $eth, avatar, ownerOf, available, recordExists} = await read_contract(name);
+	if (recordExists) {
+		return Record.from({
+			name,
+			description: `🔒️ ${ethers.getAddress(ownerOf)}`,
+			$eth, avatar,
+			url: `https://teamnick.xyz/nft/${BigInt(node).toString(10)}`,
+		});
+	} else if (available) {
+		return Record.from({
+			name,
+			description: `✅️ ${qq(name)} is available!`,
+			location: BASENAME,
+			url: WEBSITE,
+		});
+	} else {
+		return Record.from({
+			name,
+			description: `⚠️ ${qq(name)} is too short.`,
+			location: BASENAME,
+			url: WEBSITE
+		});
+	}
+}
+
+async function read_contract(label) {
 	let node = ethers.id(label);
 	let multi = await multicall.tryAggregate(false, calls.map(call => {
-		return {target: CONTRACT, data: abi.encodeFunctionData(call.fn, [call.name ? label: node])};
+		return [CONTRACT, abi.encodeFunctionData(call.fn, [call.name ? label: node])];
 	}));
 	let rec = {node};
 	calls.forEach((call, i) => {
@@ -102,7 +101,6 @@ function qq(s) {
 	return `“${s}”`
 }
 
-//console.log(await fetch_storage('raffy'));
-//console.log(await fetch_storage('raffy12345'));
-//console.log(await fetch_storage('a'));
-//console.log(Record.from({$eth: null}));
+// console.log(await read_contract('raffy'));
+// console.log(await read_contract('raffy12345'));
+// console.log(await read_contract('a'));
