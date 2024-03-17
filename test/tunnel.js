@@ -1,4 +1,4 @@
-import {CloudflareProvider, InfuraProvider, ethers} from 'ethers';
+import {InfuraProvider, ethers} from 'ethers';
 
 // see: routers/tunnel.js
 // https://sepolia.etherscan.io/address/0xCa71342cB02714374e61e400f172FF003497B2c2
@@ -8,6 +8,5 @@ let contract = new ethers.Contract('0xCa71342cB02714374e61e400f172FF003497B2c2',
 ], provider);
 
 let res = await contract.fetchFlatJSON('https://raw.githubusercontent.com/resolverworks/TheOffchainGateway.js/main/package.json', {enableCcipRead: true});
-
 
 console.log(res);
