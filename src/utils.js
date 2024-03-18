@@ -1,5 +1,3 @@
-import {ethers} from 'ethers';
-
 export function log(...a) {
 	let date = new Date();
 	let time = date.toLocaleTimeString(undefined, {hour12: false});
@@ -11,16 +9,8 @@ export function is_null_hex(s) {
 	return !s || /^(0x)?0*$/i.test(s);
 }
 
-export function is_hex(s) {
-	return typeof s === 'string' && /^0x[0-9a-f]*$/i.test(s);
-}
-
 export function is_address(s) {
 	return typeof s === 'string' && s.length == 42 && is_hex(s);
-}
-
-export function split_norm(s) {
-	return s ? ethers.ensNormalize(s).split('.') : [];
 }
 
 export function nth_label(s, skip = 0) {

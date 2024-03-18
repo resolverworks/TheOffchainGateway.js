@@ -19,7 +19,7 @@ async function handle([url], context, history) {
 	return [flat_json(await res.json())];
 }
 
-export function flat_json(json) {
+export function flat_json(json, sep = '.') {
 	let flat = [];
 	build(json, []);	
 	return flat;
@@ -32,7 +32,7 @@ export function flat_json(json) {
 			}
 			path.length = n;
 		} else {
-			flat.push([path.join('.'), String(x)]);
+			flat.push([path.join(sep), String(x)]);
 		}
 	}
 }

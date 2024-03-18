@@ -8,7 +8,7 @@ import {TimedCache} from './TimedCache.js';
 // the expectation is that:
 // * success is not an instanceof Error
 // * error is an instance of Error
-// although any return values work if they can be distinguished
+// although any values work if they can be distinguished
 
 export class SmartCache {
 	constructor() {

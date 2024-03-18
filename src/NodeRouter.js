@@ -8,7 +8,6 @@ export class NodeRouter {
 		this._reload = true;
 		this._loading = null;
 		this._loaded = null;
-
 		// features
 		this.reverse = reverse;
 		this.index = index;
@@ -35,7 +34,7 @@ export class NodeRouter {
 			if (p === this._loading) { // we're still the latest reload
 				this._loading = null;
 				if (res instanceof Error) {
-					if (!this._loaded) throw res;
+					if (!this._loaded) throw res; // init() failed
 					log(this.slug, res);
 				} else {
 					this._loaded = res; // replace existing
