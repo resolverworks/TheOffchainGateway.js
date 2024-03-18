@@ -113,6 +113,6 @@ async function read_json(req) {
 	try {
 		return JSON.parse(await read_body(req));
 	} catch (err) {
-		throw new RESTError(400, 'malformed JSON', err);
+		throw error_with('malformed JSON', {status: 422}, err);
 	}
 }
