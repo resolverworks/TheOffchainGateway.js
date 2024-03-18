@@ -40,10 +40,10 @@ const http = createServer(async (req, reply) => {
 				if (router instanceof NodeRouter) {
 					let {root, base} = await router.loaded();
 					switch (rest.join('/')) {
-						case 'base': return write_json(reply, base);
-						case 'tree': return write_json(reply, root);
+						case 'base':  return write_json(reply, base);
+						case 'tree':  return write_json(reply, root);
 						case 'names': return write_json(reply, root.collect(x => x.name));
-						case 'flat': return write_json(reply, root.collect(x => x.record));
+						case 'flat':  return write_json(reply, root.collect(x => x.record && [x.name, x.record]));
 					}
 				}
 				throw error_with('file not found', {status: 404});
