@@ -11,6 +11,11 @@ const signingKey = new ethers.SigningKey(process.env.PRIVATE_KEY); // throws
 const signer = ethers.computeAddress(signingKey);
 
 const routers = new Map();
+function require_router(slug) {
+	let router = routers.get(slug);
+	if (!router) throw error_with(`router not found: "${slug}"`, {status: 404, slug});
+	return router;
+}
 
 const ezccip = new EZCCIP();
 ezccip.enableENSIP10((name, context, history) => context.router.resolve(name, context, history));
@@ -31,20 +36,14 @@ const http = createServer(async (req, reply) => {
 					});
 				}
 				let [_, slug, ...rest] = url.pathname.split('/');
-				let router = routers.get(slug);
+				let router = require_router(slug);
 				if (router instanceof NodeRouter) {
 					let {root, base} = await router.loaded();
 					switch (rest.join('/')) {
 						case 'base': return write_json(reply, base);
 						case 'tree': return write_json(reply, root);
 						case 'names': return write_json(reply, root.collect(x => x.name));
-						case 'flat': {
-							let flat = {};
-							root.scan(x => { 
-								if (x.rec) flat[x.name] = x.record; 
-							});
-							return write_json(reply, flat);
-						}
+						case 'flat': return write_json(reply, root.collect(x => x.record));
 					}
 				}
 				throw error_with('file not found', {status: 404});
@@ -53,10 +52,8 @@ const http = createServer(async (req, reply) => {
 			case 'POST': {
 				let path = url.pathname.slice(1);
 				if (path.endsWith('/')) path = path.slice(0, -1); // drop trailing slash
-				let [slug, deploy] = path.split('/');
-				deploy ||= '';
-				let router = routers.get(slug);
-				if (!router) throw error_with(`slug "${slug}" not found`, {status: 404, slug});
+				let [slug, deploy = ''] = path.split('/');
+				let router = require_router(slug);
 				let resolver = TOR_DEPLOYS[deploy];
 				if (!resolver) throw error_with(`resolver "${deploy}" not found`, {status: 404});
 				let {sender, data: calldata} = await read_json(req);
