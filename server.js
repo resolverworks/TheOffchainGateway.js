@@ -1,6 +1,5 @@
 import {createServer} from 'node:http';
-//import {EZCCIP, error_with} from '@resolverworks/ezccip';
-import {EZCCIP, error_with} from '../ezccip.js/src/index.js';
+import {EZCCIP, error_with} from '@resolverworks/ezccip';
 import {ethers} from 'ethers';
 import {log} from './src/utils.js';
 import {ROUTERS, TOR_DEPLOYS} from './config.js';
