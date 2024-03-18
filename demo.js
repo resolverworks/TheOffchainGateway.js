@@ -14,6 +14,7 @@ const routers = [
 	(await import('./routers/reverse.js')).default,
 	(await import('./routers/teamnick.js')).default,
 	(await import('./routers/tunnel.js')).default,
+	(await import('./routers/farcaster.js')).default,
 ];
 
 // requires postgres server
