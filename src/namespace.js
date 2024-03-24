@@ -29,9 +29,13 @@ function resolve(name, context, history) {
 		if (node.wild) base = node; // remember
 	}
 	if (!space) return; // no space
-	if (node && node.record) { // we found a node with a record
-		return node.record;
-	} else if (base) { // send remainder of name to wildcard
+	if (node) { // we found a node...
+		let {record} = node;
+		if (record) { // ...with a record
+			return is_fn(record) ? record(name, context) : record;
+		}
+	}
+	if (base) { // send remainder of name to wildcard
 		let {wild} = base;
 		if (!base.offset) {
 			if (typeof wild === 'string') { // dynamic link because router load order is undefined
@@ -53,14 +57,6 @@ function resolve(name, context, history) {
 	}
 }
 
-function try_resolvable(x) {
-	if (typeof x === 'object' && typeof x.resolve === 'function') { // router
-		return x.resolve.bind(x);
-	} else if (typeof x === 'function') { // inline resolve() function
-		return x;
-	}
-}
-
 function parse(node, space) {
 	if (!space) throw error_with('expected space', {name: node.name});
 	if (space instanceof Record) { // already parsed
@@ -77,14 +73,14 @@ function parse(node, space) {
 	}
 	let {['*']: wild, ['.']: record, ...rest} = space;
 	if (!record && !wild) {
-		node.record = Record.from(space);
+		node.record = dynamic_record(space);
 		return;
 	}
 	if (wild) {
 		node.wild = wild;
 	}
 	if (record) {
-		node.record = record instanceof Record ? record : Record.from(record);
+		node.record = dynamic_record(record);
 	}
 	for (let [ks, v] of Object.entries(rest)) {
 		ks = ks.trim();
@@ -93,4 +89,28 @@ function parse(node, space) {
 			parse(node.create(k), v);
 		}
 	}
+}
+
+function try_resolvable(x) {
+	if (typeof x === 'object' && is_fn(x.resolve)) { // router
+		return x.resolve.bind(x);
+	} else if (is_fn(x)) { // inline resolve() function
+		return x;
+	}
+}
+
+function dynamic_record(x) {
+	if (is_fn(x)) return x; // single record generator
+	if (Object.values(x).some(is_fn)) { // dynamic records
+		return async (...a) => {
+			let m = Object.entries(x);
+			let v = await Promise.allSettled(m.map(async ([_, x]) => is_fn(x) ? x(...a) : x));
+			return Record.from(m.map(([k], i) => [k, v[i].value]));
+		};
+	} 
+	return Record.from(x);
+}
+
+function is_fn(x) {
+	return typeof x === 'function';
 }

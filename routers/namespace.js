@@ -3,6 +3,7 @@ import {createNamespace} from '../src/namespace.js';
 
 import cb from './coinbase.js';
 import wiki from './wikipedia.js';
+import unicode from './unicode.js';
 import mirror from './mirror.js';
 import emoji from './emoji.js';
 
@@ -11,9 +12,9 @@ export default createNamespace('namespace', { // endpoint
 		'.': { // record for the parent name
 			name: 'Raffy',
 			description: 'p ^ ~p',
+			location() { return new Date().toLocaleString(undefined, {timeZone: 'PST'}); }, // inline dynamic record
 		},
-		emoji, wiki, cb, // imported routers as "x.raffy.eth"
-		tog: 'multi', // router by name
+		unicode, emoji, wiki, cb, // imported routers as "x.raffy.eth"
 		moo: { // static records for "moo.raffy.eth"
 			name: 'Good Morning Cafe Moo #331',
 			avatar: 'https://gmcafe.s3.us-east-2.amazonaws.com/gmoo/original/331.png',
@@ -21,6 +22,7 @@ export default createNamespace('namespace', { // endpoint
 		},
 		async chonk(s) { // this is a subdomain that fetchs nft data
 			if (s) return; // only allow "chonk.raffy.eth"
+			//let record = await mirror.resolve('chonk239.nft-owner.eth');
 			let record = Record.from(await mirror.resolve('chonk239.nft-owner.eth')); // fetch through NFT Resolver
 			record.setText('avatar', 'https://chonksociety.s3.us-east-2.amazonaws.com/images/239.png'); // patch the avatar
 			return record;
@@ -31,7 +33,8 @@ export default createNamespace('namespace', { // endpoint
 				location: new Date().toISOString(),
 				description: `Namespace: ${context.space.name}\nBasename: ${context.base.name}`
 			});
-		}
+		},
+		tog: 'multi'
 	},
 	'slobo.eth': {
 		name: 'Alex',
