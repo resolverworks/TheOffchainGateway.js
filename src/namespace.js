@@ -66,8 +66,11 @@ function parse(node, space) {
 	if (space instanceof Record) { // already parsed
 		node.record = space;
 		return;
+	} else if (typeof space === 'string') { // router by name
+		node.wild = space;
+		return;
 	}
-	let resolve = try_resolvable(space); // router or inline function
+	let resolve = try_resolvable(space); // router instance or inline resolve() function
 	if (resolve) {
 		node.wild = resolve;
 		return;

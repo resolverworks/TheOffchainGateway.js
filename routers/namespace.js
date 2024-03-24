@@ -13,6 +13,7 @@ export default createNamespace('namespace', { // endpoint
 			description: 'p ^ ~p',
 		},
 		emoji, wiki, cb, // imported routers as "x.raffy.eth"
+		tog: 'multi', // router by name
 		moo: { // static records for "moo.raffy.eth"
 			name: 'Good Morning Cafe Moo #331',
 			avatar: 'https://gmcafe.s3.us-east-2.amazonaws.com/gmoo/original/331.png',
