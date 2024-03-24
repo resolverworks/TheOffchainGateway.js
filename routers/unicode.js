@@ -15,21 +15,25 @@ export default {
 			let map = await get_char_map();
 			let info = map.get(cp);
 			let form = String.fromCodePoint(cp);
-			let notice;
+			let state;
 			try {
 				let norm = ens_normalize(form);
-				notice = norm === form ? '✅️ Normalized' : `🔀️ Mapped to "${norm}"`;
+				state = norm === form ? '✅️ Normalized' : `🔀️ Mapped to "${norm}"`;
 			} catch (err) {
-				notice = `❌️ ${err.message}`;
+				state = `❌️ ${err.message}`;
 			}
+			let parts = [`Dec: ${cp}`, `Hex: 0x${cp.toString(16).toUpperCase().padStart(2, '0')}`];
+			if (info && info.script) {
+				parts.push(`Script: ${info.script}`);
+			}
+			parts.push(state);
 			let record = Record.from({
 				name: info ? info.name : safe_str_from_cps([cp]),
-				description: `Dec: ${cp} / Hex: 0x${cp.toString(16).toUpperCase().padStart(2, '0')}`,
-				avatar: should_escape(cp) ? null : data_url_short_cps([cp]),
+				avatar: data_url_short_cps([should_escape(cp) ? 0xFFFD : cp]),
+				location: should_escape(cp) ? null : form,
+				description: parts.join(' • '),
 				url: `https://www.compart.com/en/unicode/U+${cp.toString(16).toUpperCase().padStart(4, '0')}`,
 				$eth: '0x' + cp.toString(16).padStart(40, '0'),
-				notice,
-				location: info?.script ? info.script : 'Unknown Script'
 			});
 			return record;
 		});

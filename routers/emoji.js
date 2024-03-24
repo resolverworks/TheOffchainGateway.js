@@ -23,7 +23,7 @@ export default {
 			let v = ens_emoji();
 			cps = v[Math.random()*v.length|0];
 		}
-		return cache.get('SAME', 2000, () => fetch_shortest(String.fromCodePoint(...cps)));
+		return cache.get('SAME', 5000, () => fetch_shortest(String.fromCodePoint(...cps)));
 	}
 }
 
