@@ -33,8 +33,8 @@ export class MirrorRouter {
 		if (resolver === ethers.ZeroAddress) return;
 		let calls = this.profile.makeCalls(node);
 		let answers = await this.multicall.tryAggregate(false, calls.map(data => [resolver, data]));
-		let rec = new Record();
-		rec.parseCalls(calls, answers.map(x => x[1]));
-		return rec;
+		let record = new Record();
+		record.parseCalls(calls, answers.map(x => x[1]));
+		return record;
 	}
 }

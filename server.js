@@ -1,7 +1,7 @@
 import {createServer} from 'node:http';
-import {EZCCIP, error_with} from '@resolverworks/ezccip';
+import {EZCCIP} from '@resolverworks/ezccip';
 import {ethers} from 'ethers';
-import {log} from './src/utils.js';
+import {log, error_with} from './src/utils.js';
 import {ROUTERS, TOR_DEPLOYS} from './config.js';
 import {NodeRouter} from './src/NodeRouter.js';
 
@@ -43,7 +43,7 @@ const http = createServer(async (req, reply) => {
 						case 'base':  return write_json(reply, base);
 						case 'tree':  return write_json(reply, root);
 						case 'names': return write_json(reply, root.collect(x => x.name));
-						case 'flat':  return write_json(reply, root.collect(x => x.record && [x.name, x.record]));
+						case 'flat':  return write_json(reply, root.collect(x => x.record ? [x.name, x.record] : undefined));
 					}
 				}
 				throw error_with('file not found', {status: 404});
@@ -57,7 +57,7 @@ const http = createServer(async (req, reply) => {
 				let resolver = TOR_DEPLOYS[deploy];
 				if (!resolver) throw error_with(`resolver "${deploy}" not found`, {status: 404});
 				let {sender, data: calldata} = await read_json(req);
-				let {data, history} = await ezccip.handleRead(sender, calldata, {signingKey, resolver, router, ip});
+				let {data, history} = await ezccip.handleRead(sender, calldata, {signingKey, resolver, router, routers, ip});
 				log(ip, `${router.slug}/${deploy}`, history.toString());
 				return write_json(reply, {data});
 			}

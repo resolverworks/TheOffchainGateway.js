@@ -1,3 +1,17 @@
+// TODO export this from ezccip or enson
+//export {error_with} from '@resolverworks/enson';
+export function error_with(message, params, cause) {
+	let error;
+	if (cause) {
+		error = new Error(message, {cause});
+		if (!error.cause) error.cause = cause;
+	} else {
+		error = new Error(message);
+	}
+	return Object.assign(error, params);
+}
+
+
 export function log(...a) {
 	let date = new Date();
 	let time = date.toLocaleTimeString(undefined, {hour12: false});

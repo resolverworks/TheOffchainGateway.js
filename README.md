@@ -11,14 +11,44 @@ Offchain CCIP-Read Gateway in JS powered by [**ezccip.js**](https://github.com/r
 
 ## Routers
 
-* [`Router`](./routers/fixed.js) is named function, that given an name (`raffy.eth`), potentially returns a [`Record`](./test/Record.js)
-	* Example: [`fixed.js`](./routers/fixed.js) has slug `fixed`
-		* Mainnet Endpoint: `/fixed`
-		* Goerli Deployment: `/fixed/g` — see [config.js](./config.js)
-* There are [many example](./routers/) routers.
-* You can host multiple independent routers simultaneously.
-* [`MultiRouter`](#routers-as-subdomains-→-multirouterjs) lets a single endpoint access other routers using their slug.
-	* Example: `/multi` + `"a.b.flat.c.d"` = `/flat` + `"a.b"`
+```ts
+type Router {
+	// endpoint path component
+	slug: string;
+	
+	// called during server start
+	init?(ezccip: EZCCIP): Promise<void>;
+
+	// ENS request handler
+	resolve?(
+		name: string, // "raffy.eth"
+		context: Context, 
+		history: History  // current history object
+	): Promise<Record | undefined>;
+}
+type Context = {
+	sender: string; // address of calling contract (TOR or wrapper)
+	resolver: string; // address of receiving contract (TOR)
+	calldata: string; // calldata of request
+	router: Router; // the current router
+	routers: Map<string, Router>; // available routers
+	history: History; // root history object
+	ip: string; // ip address of client
+}
+```
+* `POST` Endpoints:
+	* `http://localhost/fixed` &rarr; router with slug `"fixed"` and uses **Mainnet TOR** (default) as the receiver
+	* `http://localhost/fixed/s` uses **Sepolia TOR** &mdash; see [config.js](./config.js)
+* see `EZCCIP`, `CallContext`, and `History` from [resolverworks/**ezccip**](https://github.com/resolverworks/ezccip.js/blob/main/dist/index.d.ts)
+* see `Record`, `Profile`, `Node` from [resolverworks/**enson**](https://github.com/resolverworks/enson.js/blob/main/dist/index.d.ts)
+* TOR-invoked [ENSIP-10](https://docs.ens.domains/ensip/10) requests are handled by `resolve()`
+* Arbitrary [EIP-3668](https://eips.ethereum.org/EIPS/eip-3668) requests can be registered during `init()`
+* There are [many demo](./routers/) routers.
+	* Enabled with env `DEMO=1` (default)
+* You may host multiple independent routers simultaneously.
+* [`multirouter(routers: Router[], slug?: string = "multi")`](./src/MultiRouter.js) creates a synthetic router which dispatches `resolve()` to a supplied router by finding the first label that matches a slug.
+	* Example: `/multi` + `"a.b.flat.c.d"` &rarr; `/flat` + `"a.b"`
+	* Enabled with env `MULTI=1` (default)
 * Routers with [`fetch_root()`](./utils/Router.js) like [Tree](#tree-database-via-noderouterjs) automatically have a JSON API:
 	* [`GET /$slug/root`](https://raffy.xyz/tog/tree/tree) → tree-like JSON
 	* [`GET /$slug/flat`](https://raffy.xyz/tog/tree/flat) → flat-like JSON
