@@ -1,11 +1,11 @@
 import {MirrorRouter} from '../src/MirrorRouter.js';
 import {ethers} from 'ethers';
-import {nth_label} from '../src/utils.js';
 
 export default new MirrorRouter({
 	slug: 'mirror',
 	provider: new ethers.CloudflareProvider(),
-	async rewrite(name) {
-		return `${nth_label(name)}.eth`; // "[a].b.c" => "[a].eth"
-	}
+	// rewrite the name (this is the default)
+	// async rewrite(name) {
+	// 	return name;
+	// }
 });

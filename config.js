@@ -46,6 +46,9 @@ if (is_enabled(process.env.DEMO)) {
 	ROUTERS.push((await import('./routers/teamnick.js')).default);
 	ROUTERS.push((await import('./routers/tunnel.js')).default);
 	ROUTERS.push((await import('./routers/farcaster.js')).default);
+	ROUTERS.push((await import('./routers/namespace.js')).default);
+	ROUTERS.push((await import('./routers/unicode.js')).default);
+	ROUTERS.push((await import('./routers/emoji.js')).default);
 }
 
 // requires postgres server
