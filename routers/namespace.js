@@ -9,7 +9,7 @@ import emoji from './emoji.js';
 export default createNamespace('namespace', { // endpoint
 	'raffy.eth': { // the name I want to describe
 		'.': { // record for the parent name
-			name: 'Andrew',
+			name: 'Raffy',
 			description: 'p ^ ~p',
 		},
 		emoji, wiki, cb, // imported routers as "x.raffy.eth"
