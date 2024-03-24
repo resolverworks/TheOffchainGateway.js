@@ -33,6 +33,7 @@ export class MirrorRouter {
 		return this.cache.get(await this.rewrite(name), 30000, x => this.fetch_record(x));
 	}
 	async find_resolver(name) {
+		if (!name) return;
 		let labels = name.split('.');
 		for (let drop = 0; drop < labels.length; drop++) {
 			let base = labels.slice(drop).join('.');
