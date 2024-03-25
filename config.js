@@ -56,7 +56,7 @@ if (is_enabled(process.env.DEMO)) {
 if (process.env.NAMESTONE_PG) {
 	let pg = (await import('./routers/namestone-pg.js')).default
 	ROUTERS.push({...pg, slug: 'namestone-pg', deploy: 'e1'});
-	ROUTERS.push({...pg, slug: 'pg', deploy: 'd1'});
+	ROUTERS.push({ ...pg, slug: "pg", deploy: 'e0' });
 }
 
 // dynamically load any underscored routers
