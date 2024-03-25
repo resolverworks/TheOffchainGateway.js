@@ -5,6 +5,7 @@ import {readdir} from 'node:fs/promises';
 // https://github.com/resolverworks/TheOffchainResolver.sol
 // note: these should of been named better during development
 // only mainnet needs short urls to reduce storage costs
+export const TOR_DEPLOY0 = 'e1';
 export const TOR_DEPLOYS = {
 	'e1': '0x84c5AdB77dd9f362A1a3480009992d8d47325dc3', // Mainnet (beta)
 	 'g': '0x9b87849Aa21889343b6fB1E146f9F734ecFA9982', // Goerli
@@ -16,7 +17,7 @@ export const TOR_DEPLOYS = {
 
 	// old
 	'e0': '0x828ec5bDe537B8673AF98D77bCB275ae1CA26D1f', // Mainnet (alpha)
-	'd1': '0xa4407E257Aa158C737292ac95317a29b4C90729D', // DNS Mainnet
+	'd1': '0xa4407E257Aa158C737292ac95317a29b4C90729D', // DNS Mainnet (this was '' before)
 	'ds': '0x179Be112b24Ad4cFC392eF8924DfA08C20Ad8583', // DNS Sepolia
 	'eg': '0x2e513399b2c5337e82a0a71992cbd09b78170843', // ENS Goerli
 
@@ -53,7 +54,9 @@ if (is_enabled(process.env.DEMO)) {
 
 // requires postgres server
 if (process.env.NAMESTONE_PG) {
-	ROUTERS.push((await import('./routers/namestone-pg.js')).default);
+	let pg = (await import('./routers/namestone-pg.js')).default
+	ROUTERS.push({...pg, slug: 'namestone-pg', deploy: 'e1'});
+	ROUTERS.push({...pg, slug: 'pg', deploy: 'd1'});
 }
 
 // dynamically load any underscored routers

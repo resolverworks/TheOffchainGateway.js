@@ -2,7 +2,7 @@ import {createServer} from 'node:http';
 import {EZCCIP} from '@resolverworks/ezccip';
 import {ethers} from 'ethers';
 import {log, error_with} from './src/utils.js';
-import {ROUTERS, TOR_DEPLOYS} from './config.js';
+import {ROUTERS, TOR_DEPLOYS, TOR_DEPLOY0} from './config.js';
 import {NodeRouter} from './src/NodeRouter.js';
 
 const PORT = parseInt(process.env.HTTP_PORT);
@@ -52,8 +52,9 @@ const http = createServer(async (req, reply) => {
 			case 'POST': {
 				let path = url.pathname.slice(1);
 				if (path.endsWith('/')) path = path.slice(0, -1); // drop trailing slash
-				let [slug, deploy = ''] = path.split('/');
+				let [slug, deploy] = path.split('/');
 				let router = require_router(slug);
+				if (!deploy) deploy = router.deploy ?? TOR_DEPLOY0;
 				let resolver = TOR_DEPLOYS[deploy];
 				if (!resolver) throw error_with(`resolver "${deploy}" not found`, {status: 404});
 				let {sender, data: calldata} = await read_json(req);
