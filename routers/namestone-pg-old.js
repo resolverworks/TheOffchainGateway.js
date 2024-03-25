@@ -12,7 +12,7 @@ const record_cache = new SmartCache();
 const RECORD_CACHE_MS = 15000;
 
 export default {
-	slug: 'namestone-pg',
+	slug: 'pg',
 	async resolve(name) { 
 		const MIN = 2; // currently every domain is "a.b"
 		let labels = name.split('.');

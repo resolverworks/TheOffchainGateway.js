@@ -20,6 +20,7 @@ const routers = [
 // requires postgres server
 if (process.env.NAMESTONE_PG) {
 	routers.push((await import('./routers/namestone-pg.js')).default);
+	routers.push((await import("./routers/namestone-pg-old.js")).default);
 }
 
 // (optional) this exposes the other routers as subdomains
