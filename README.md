@@ -6,6 +6,7 @@ Offchain CCIP-Read Gateway in JS powered by [**ezccip.js**](https://github.com/r
 * `npm i`
 * Create `.env` from [`.env.example`](./.env.example)
 * By default, [`config.js`](./config.js) includes many [demo routers](#demos)
+	* Enabled with env `DEMO=1` (default)
 * Start server: `npm run start`
 	* Configuration available at [`http://localhost:$PORT/`](https://raffy.xyz/tog/)
 * [Setup **TOR**](https://github.com/resolverworks/TheOffchainResolver.sol#context-format)
@@ -44,8 +45,6 @@ type Context = {
 * see `Record`, `Profile`, `Node` from [resolverworks/**enson**](https://github.com/resolverworks/enson.js/blob/main/dist/index.d.ts)
 * TOR-invoked [ENSIP-10](https://docs.ens.domains/ensip/10) requests are handled by `resolve()`
 * Arbitrary [EIP-3668](https://eips.ethereum.org/EIPS/eip-3668) requests can be registered during `init()`
-* There are [many demo](./routers/) routers.
-	* Enabled with env `DEMO=1` (default)
 * You may host multiple independent routers simultaneously.
 * [MultiRouter](./src/MultiRouter.js) dispatches requests to another router where `subdomain = slug`
 	* Example: `/multi` + `"a.b.flat.c.d"` &rarr; `/flat` + `"a.b"`
@@ -59,7 +58,7 @@ type Context = {
 	* [`fixed.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#fixed.tog.raffy.eth)
 	* [`raffy.xyz`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#raffy.xyz)
 * [Random Address](./routers/random.js)
-	* [`random.fixed.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#random.fixed.tog.raffy.eth)
+	* [`random.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#random.tog.raffy.eth)
 	* [`random.raffy.xyz`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#random.raffy.xyz)
 * [Simple {name: address} Database](./routers/simple.js) &rarr; [simple.json](./routers/simple.json) 
 	* [`carl.simple.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#carl.simple.tog.raffy.eth)
@@ -87,7 +86,7 @@ type Context = {
 	* [`0x1f4a9.unicode.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#0x1f4a9.unicode.tog.raffy.eth)
 * [Emoji](./routers/emoji.js) &mdash; lookup any base-single emoji
 	* [`💩.emoji.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#%F0%9F%92%A9.emoji.tog.raffy.eth)
-* [Airtable](./routers/airtable.js) via [`AirtableRouter.js`](./src/AirtableRouter.js) &rarr;  [demo table](https://airtable.com/appzYI39knUZdO88N/shrkNXbY8tHEFk2Ew/tbl1osSFBUef6Wjof)
+* [Airtable](./routers/airtable.js) via [`AirtableRouter.js`](./src/AirtableRouter.js) &rarr; [demo table](https://airtable.com/appzYI39knUZdO88N/shrkNXbY8tHEFk2Ew/tbl1osSFBUef6Wjof)
 	* Requires [airtable.com](https://airtable.com/) account
 	* Supports any record type (using [resolverworks/**enson.js**](https://github.com/resolverworks/enson.js) notation for column name)
 	* [`moo.airtable.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#moo.airtable.tog.raffy.eth)
@@ -110,3 +109,5 @@ type Context = {
 * [Flat](./routers/flat.js) via [NodeRouter.js](./src/NodeRouter.js) &rarr; [`flat.json`](./examples/flat.json)
 	* Same as **Tree** except uses a flat data structure
 	* [`raffy.flat.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#raffy.flat.tog.raffy.eth)
+* [Offchain Tunnel for `fetchFlatJSON()`](./routers/tunnel.js) &mdash; an example of [resolverworks/**OffchainTunnel.sol**](https://github.com/resolverworks/TheOffchainResolver.sol?tab=readme-ov-file#offchaintunnelsol)
+	* [Demo](https://raffy.antistupid.com/eth/offchain-tunnel.html) (view source)
