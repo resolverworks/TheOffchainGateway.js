@@ -10,6 +10,7 @@ const CHAIN = 84532;
 
 // supported basenames
 const base = Node.root('base');
+base.create('cu-cypherpunk.eth').is_base = true;
 base.create('xctens-eg.eth').is_base = true;
 base.create('xctens.eth').is_base = true;
 
