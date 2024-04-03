@@ -1,8 +1,8 @@
 import {Record} from '@resolverworks/enson';
 import {ethers} from 'ethers';
-import {SmartCache} from '../src/SmartCache.js';
 import {ens_normalize, ens_emoji, ens_beautify, ens_tokenize} from '@adraffy/ens-normalize';
 import {data_url_short_cps} from './utils.js';
+import {SmartCache} from '../src/utils.js';
 
 const cache = new SmartCache();
 
@@ -23,7 +23,7 @@ export default {
 			let v = ens_emoji();
 			cps = v[Math.random()*v.length|0];
 		}
-		return cache.get('SAME', 5000, () => fetch_shortest(String.fromCodePoint(...cps)));
+		return cache.get('SAME', () => fetch_shortest(String.fromCodePoint(...cps)));
 	}
 }
 

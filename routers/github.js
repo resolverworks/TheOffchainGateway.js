@@ -1,6 +1,5 @@
-import {Record, Node} from '@resolverworks/enson';
-import {SmartCache} from '../src/SmartCache.js';
-import {log} from '../src/utils.js';
+import {Record, Node, namesplit} from '@resolverworks/enson';
+import {log, SmartCache} from '../src/utils.js';
 
 const cache = new SmartCache();
 
@@ -13,7 +12,7 @@ const record0 = Record.from({
 });
 
 async function read_ens_json(account, repo) {
-	return cache.get(`${account}/${repo}`, 10000, async path => {
+	return cache.get(`${account}/${repo}`, async path => {
 		let res = await fetch(`https://github.com/${path}/raw/main/ENS.json`);
 		if (!res.ok) {
 			log(`github: ${path} => not found`);
@@ -31,7 +30,7 @@ async function read_ens_json(account, repo) {
 
 async function find_record(name) {
 	if (!/^[a-z0-9-\.]+$/.test(name)) return; // could show error
-	let parts = name.split('.');
+	let parts = namesplit(name);
 	let account = parts.pop();
 	try {
 		let root = await read_ens_json(account, account);

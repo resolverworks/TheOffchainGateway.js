@@ -1,12 +1,10 @@
 import {ethers} from 'ethers';
 import {Record} from '@resolverworks/enson';
-import {SmartCache} from '../src/SmartCache.js';
-import {is_null_hex, log} from '../src/utils.js';
+import {is_null_hex, curlyquote, log, SmartCache} from '../src/utils.js';
 
 const CONTRACT = '0x7C6EfCb602BC88794390A0d74c75ad2f1249A17f';
 const WEBSITE = 'https://teamnick.xyz/';
 const BASENAME = 'teamnick.xyz';
-const CACHE_MS = 60000;
 
 const cache = new SmartCache();
 const provider = new ethers.JsonRpcProvider('https://mainnet.base.org', 8453, {staticNetwork: true});
@@ -38,7 +36,7 @@ export default {
 	slug: 'teamnick',
 	async resolve(name) {
 		if (!name || name.includes('.')) {
-			let supply = await cache.get('#', CACHE_MS, () => contract.totalSupply());
+			let supply = await cache.get('#', () => contract.totalSupply());
 			return Record.from({
 				name: `${supply.toLocaleString()} names registered`,
 				$base: CONTRACT,
@@ -47,7 +45,7 @@ export default {
 				url: WEBSITE,
 			});
 		}
-		return cache.get(name, CACHE_MS, create_record);
+		return cache.get(name, create_record);
 	}
 };
 
@@ -64,14 +62,14 @@ async function create_record(name) {
 	} else if (available) {
 		return Record.from({
 			name,
-			description: `✅️ ${qq(name)} is available!`,
+			description: `✅️ ${curlyquote(name)} is available!`,
 			location: BASENAME,
 			url: WEBSITE,
 		});
 	} else {
 		return Record.from({
 			name,
-			description: `⚠️ ${qq(name)} is too short.`,
+			description: `⚠️ ${curlyquote(name)} is too short.`,
 			location: BASENAME,
 			url: WEBSITE
 		});
@@ -95,10 +93,6 @@ async function read_contract(label) {
 		}
 	});
 	return rec;
-}
-
-function qq(s) {
-	return `“${s}”`
 }
 
 // console.log(await read_contract('raffy'));

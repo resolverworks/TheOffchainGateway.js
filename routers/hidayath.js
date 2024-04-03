@@ -1,6 +1,6 @@
 
 import {Record} from '@resolverworks/enson';
-import {SmartCache} from '../src/SmartCache.js';
+import {SmartCache} from '../src/utils.js';
 
 // example for hidayath.eth
 
@@ -28,6 +28,6 @@ async function create_record(name) {
 export default {
 	slug: 'hidayath',
 	async resolve(name) {
-		return cache.get(name, 10000, create_record); // cache for 10 seconds
+		return cache.get(name, create_record);
 	}
 }

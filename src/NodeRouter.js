@@ -1,6 +1,6 @@
 import {Record, Node} from '@resolverworks/enson';
 import {watch} from 'node:fs';
-import {log} from './utils.js';
+import {log, drop_base} from './utils.js';
 
 export class NodeRouter {
 	constructor(slug, {reverse = 'addr.reverse', index = 100} = {}) {
@@ -17,14 +17,7 @@ export class NodeRouter {
 	}
 	async resolve(name) {
 		let {root, base} = await this.loaded();
-		let labels = name.split('.');
-		let take = labels.length; // use full name
-		for (let i = take-1; i >= 0; i--) {
-			base = base.get(labels[i]);
-			if (!base) break; // unknown basename
-			if (base.is_base) take = i; // remember match
-		}
-		return root.find(labels.slice(0, take).join('.'))?.record;
+		return root.find(drop_base(base, name))?.record;
 	}
 	async loaded() {
 		if (this._reload) { // marked for reload

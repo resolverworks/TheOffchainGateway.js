@@ -4,7 +4,7 @@
 	"dependencies": {
 		"@adraffy/ens-normalize": "^1.10.1",
 		"@ensdomains/address-encoder": "^1.0.0",
-		"@resolverworks/enson": "^0.0.7",
+		"@resolverworks/enson": "^0.0.8",
 		"@resolverworks/ezccip": "^0.0.8",
 		"ethers": "^6.11.1",
 		"postgres": "^3.4.3"

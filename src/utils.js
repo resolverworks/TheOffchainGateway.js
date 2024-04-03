@@ -1,16 +1,30 @@
-// TODO export this from ezccip or enson
-//export {error_with} from '@resolverworks/enson';
-export function error_with(message, params, cause) {
-	let error;
-	if (cause) {
-		error = new Error(message, {cause});
-		if (!error.cause) error.cause = cause;
-	} else {
-		error = new Error(message);
+import {error_with, asciiize} from '@resolverworks/ezccip';
+import {namesplit} from '@resolverworks/enson';
+
+export {SmartCache} from './SmartCache.js';
+export {error_with};
+
+// TODO: maybe move this to enson
+// also could add Node.baseset([name, ...])
+export function drop_base(base, name) {
+	if (!base) return name;
+	let labels = namesplit(name);
+	let take = labels.length;
+	for (let i = take-1; i >= 0; i--) {
+		base = base.get(labels[i]);
+		if (!base) break; // unknown basename
+		if (base.is_base) take = i; // remember match
 	}
-	return Object.assign(error, params);
+	return labels.slice(0, take).join('.');
 }
 
+export function safe_name(s) {
+	return `"${asciiize(s)}"`;
+}
+
+export function curlyquote(s) {
+	return `“${s}”`
+}
 
 export function log(...a) {
 	let date = new Date();

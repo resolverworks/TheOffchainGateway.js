@@ -1,26 +1,22 @@
 import {Record} from '@resolverworks/enson';
-import {asciiize} from '@resolverworks/ezccip';
-import {SmartCache} from './SmartCache.js';
-import {log} from '../src/utils.js';
+import {log, safe_name, SmartCache} from './utils.js';
 
 export class AirtableRouter {
-	constructor({slug, secret, base, field = 'name', dur = 10000}) {
+	constructor({slug, secret, base, field = 'name'}) {
 		this.slug = slug;
 		this.secret = secret;
 		this.base = base;
 		this.field = field;
 		this.cache = new SmartCache();
-		this.dur = dur;
 	}
 	async resolve(name) {
-		return this.cache.get(name, this.dur, x => this.lookup(x));
+		return this.cache.get(name, x => this.lookup(x));
 	}
 	async lookup(name) {
-		if (name.includes("'")) return; // prevent quote injection
-		log(`airtable: ${asciiize(name)}`);
+		log(this.slug, safe_name(name));
 		let url = new URL(`https://api.airtable.com/v0/${this.base}/records`);
 		url.searchParams.set('maxRecords', 1);
-		url.searchParams.set('filterByFormula', `{${this.field}}='${name}'`);
+		url.searchParams.set('filterByFormula', `{${this.field}}='${name.replaceAll("'", "\\'")}'`);
 		let res = await fetch(url, {
 			headers: {authorization: `Bearer ${this.secret}`}
 		});

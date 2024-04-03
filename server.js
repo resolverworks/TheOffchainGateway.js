@@ -65,12 +65,14 @@ const http = createServer(async (req, reply) => {
 			default: throw error_with('unsupported http method', {status: 405});
 		}
 	} catch (err) {
-		let status = 500;
-		let message = 'internal error';
-		if (Number.isInteger(err.status)) {
-			({status, message} = err);
+		let {message, status} = err;
+		if (status) {
+			log(ip, req.method, req.url, status, message);
+		} else {
+			log(ip, req.method, req.url, err);
+			status = 500;
+			message = 'unknown error';
 		}
-		log(ip, req.method, req.url, err);
 		reply.statusCode = status;
 		write_json(reply, {message});
 	}

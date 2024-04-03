@@ -7,15 +7,13 @@ import {readdir} from 'node:fs/promises';
 // only mainnet needs short urls to reduce storage costs
 export const TOR_DEPLOY0 = 'e1';
 export const TOR_DEPLOYS = {
-	'e1': '0x84c5AdB77dd9f362A1a3480009992d8d47325dc3', // Mainnet (beta)
-	 'g': '0x9b87849Aa21889343b6fB1E146f9F734ecFA9982', // Goerli
-	 's': '0x9Ec7f2ce83fcDF589487303fA9984942EF80Cb39', // Sepolia
-
-	// experimental
-	'g2': '0x8e1af190fB76198b86C83c5EFe2Fb0ADC1cbD50F', // Goerli
-	's2': '0xf93F7F8002BcfB285D44E9Ef82E711cCD0D502A2', // Sepolia
+	'e1': '0x84c5AdB77dd9f362A1a3480009992d8d47325dc3', // Mainnet (LATEST)
+	's2': '0xf93F7F8002BcfB285D44E9Ef82E711cCD0D502A2', // Sepolia (LATEST)
 
 	// old
+	 'g': '0x9b87849Aa21889343b6fB1E146f9F734ecFA9982', // Goerli
+	'g2': '0x8e1af190fB76198b86C83c5EFe2Fb0ADC1cbD50F', // Goerli
+	 's': '0x9Ec7f2ce83fcDF589487303fA9984942EF80Cb39', // Sepolia
 	'e0': '0x828ec5bDe537B8673AF98D77bCB275ae1CA26D1f', // Mainnet (alpha)
 	'd1': '0xa4407E257Aa158C737292ac95317a29b4C90729D', // DNS Mainnet (this was '' before)
 	'ds': '0x179Be112b24Ad4cFC392eF8924DfA08C20Ad8583', // DNS Sepolia
@@ -50,6 +48,7 @@ if (is_enabled(process.env.DEMO)) {
 	ROUTERS.push((await import('./routers/namespace.js')).default);
 	ROUTERS.push((await import('./routers/unicode.js')).default);
 	ROUTERS.push((await import('./routers/emoji.js')).default);
+	ROUTERS.push((await import('./routers/xctens.js')).default);
 }
 
 // requires postgres server

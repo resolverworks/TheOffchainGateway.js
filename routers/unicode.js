@@ -1,17 +1,25 @@
 import {Record} from '@resolverworks/enson';
-import {SmartCache} from '../src/SmartCache.js';
 import {ens_normalize, safe_str_from_cps, should_escape} from '@adraffy/ens-normalize';
 import {data_url_short_cps} from './utils.js';
+import {nth_label, SmartCache} from '../src/utils.js';
 
 const cache = new SmartCache();
+const MAX_CP = 0x10FFFF;
 
 export default {
 	slug: 'unicode',
-	resolve(s) {
-		const max = 0x10FFFF;
-		let cp = s ? parseInt(s) : (Math.random()*(max+1)|0);
-		if (!(cp >= 0 && cp <= max)) return;
-		return cache.get(cp, 5000, async cp => {
+	resolve(name) {
+		let label = nth_label(name);
+		let cp;
+		if (label) {
+			if (!/^\d+|0x[0-9a-f]+$/i.test(label)) return;
+			cp = parseInt(label);
+			if (cp > MAX_CP) return;
+			label = cp;
+		} else {
+			cp = Math.random()*(MAX_CP+1)|0
+		}
+		return cache.get(label, async cp => {
 			let map = await get_char_map();
 			let info = map.get(cp);
 			let form = String.fromCodePoint(cp);
@@ -41,7 +49,7 @@ export default {
 }
 
 async function get_char_map() {
-	return cache.get('emoji', 86_400_000, async () => {
+	return cache.get('emoji', async () => {
 		let res = await fetch('https://raw.githubusercontent.com/adraffy/ens-normalize.js/main/derive/output/names.json');
 		if (!res.ok) throw new Error('wtf');
 		let {chars, ranges, scripts} = await res.json();
@@ -66,5 +74,5 @@ async function get_char_map() {
 			}
 		}
 		return map;
-	});
+	}, 86_400_000);
 }

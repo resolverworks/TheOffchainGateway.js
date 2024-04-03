@@ -1,6 +1,5 @@
 import {Record} from '@resolverworks/enson';
-import {SmartCache} from '../src/SmartCache.js';
-import {log} from '../src/utils.js';
+import {log, SmartCache} from '../src/utils.js';
 import {ethers} from 'ethers';
 
 const cache = new SmartCache();
@@ -25,7 +24,7 @@ async function fetch_rates() {
 export default {
 	slug: 'coinbase',
 	async resolve(name) {
-		let rates = await cache.get('RATES', 30000, fetch_rates);
+		let rates = await cache.get('RATES', fetch_rates);
 		if (!name) {
 			return Record.from({
 				name: 'Coinbase API over ENS',

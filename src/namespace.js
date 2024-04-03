@@ -1,4 +1,4 @@
-import {Node, Record} from '@resolverworks/enson';
+import {Node, Record, namesplit} from '@resolverworks/enson';
 import {log, error_with} from './utils.js';
 
 // cant decide if this should be a class or just a mixin
@@ -17,7 +17,7 @@ export function createNamespace(slug, namespaces) {
 }
 
 function resolve(name, context, history) {
-	let labels = name.split('.');
+	let labels = namesplit('.');
 	let node = this.root;
 	let space;
 	let base;

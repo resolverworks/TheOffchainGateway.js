@@ -1,15 +1,12 @@
 import {Record} from '@resolverworks/enson';
-import {SmartCache} from '../src/SmartCache.js';
-import {log} from '../src/utils.js';
+import {log, safe_name, SmartCache} from '../src/utils.js';
 import postgres from 'postgres';
 
 const sql = postgres(process.env.NAMESTONE_PG);
 // why doesn't this library expose connect/disconnect events?
 
 const domain_cache = new SmartCache();
-const DOMAIN_CACHE_MS = 60000;
 const record_cache = new SmartCache();
-const RECORD_CACHE_MS = 15000;
 
 export default {
 	//slug: 'namestone',
@@ -18,19 +15,18 @@ export default {
 		let labels = name.split('.');
 		if (labels.length < MIN) return;
 		let basename = labels.splice(labels.length - MIN, MIN).join('.'); 
-		let domain = await domain_cache.get(basename, DOMAIN_CACHE_MS, find_domain);
+		let domain = await domain_cache.get(basename, find_domain);
 		if (!domain) return; // silent
 		switch (labels.length) {
-			case 0: return record_cache.get(name, RECORD_CACHE_MS, () => get_domain_record(domain));
-			case 1: return record_cache.get(name, RECORD_CACHE_MS, () => get_sub_record(domain, labels[0]));
+			case 0: return record_cache.get(name, () => get_domain_record(domain));
+			case 1: return record_cache.get(name, () => get_sub_record(domain, labels[0]));
 		}
 	}
 };
 
 async function find_domain(name) {
-	log(`namestone domain: ${name}`);
+	log(`namestone domain: ${safe_name(name)}`);
 	let [domain] = await sql`SELECT * FROM domain WHERE name = ${name} LIMIT 1`;
-	//if (!domain) throw new Error(`"${asciiize(name)}" does not exist`);
 	return domain;
 }
 
@@ -59,6 +55,6 @@ async function get_sub_record(domain, name) {
 	if (subdomain.address) rec.setAddress(60, subdomain.address);
 	if (subdomain.contenthash) rec.setChash(subdomain.contenthash);
 	for (let {key, value} of texts) rec.setText(key, value);
-	for (let {coin_type, address} of coins) rec.setAddress(parseInt(coin_type), address);
+	for (let {coin_type, address} of coins) rec.setAddress(BigInt(coin_type), address);
 	return rec;
 }

@@ -8,6 +8,7 @@
 // example: 
 // slugs = [multi, chonk]
 // [/multi] "a.b.chonk.d.e" => [/chonk] "a.b" 
+import {namesplit} from '@resolverworks/enson';
 
 export class MultiRouter {
 	constructor(slug, routers) {
@@ -15,13 +16,13 @@ export class MultiRouter {
 		this.routers = new Map(routers.map(x => [x.slug, x]));
 	}
 	resolve(name, context, history) {
-		let labels = name.split('.');
+		let labels = namesplit(name);
 		for (let i = labels.length-1; i >= 0; i--) {
 			let router = this.routers.get(labels[i]); 
 			if (router) {
 				context.multi = name; // remember original name
 				let rest = labels.slice(0, i).join('.'); // "a.b" in "a.b.$router.c.d" 
-				history.show = [`${name} => ${router.slug}:${rest}`];
+				history.show = [`${name} => ${router.slug}/${rest}`];
 				return router.resolve(rest, context, history);
 			}
 		}

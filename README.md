@@ -5,7 +5,7 @@ Offchain CCIP-Read Gateway in JS powered by [**ezccip.js**](https://github.com/r
 
 * `npm i`
 * Create `.env` from [`.env.example`](./.env.example)
-* By default, [`config.js`](./config.js) is using multiple [routers](#routers) defined in [`demo.js`](./demo.js)
+* By default, [`config.js`](./config.js) is hosting many demo [routers](#routers)
 * Start server: `npm run start`
 * [Setup **TOR**](https://github.com/resolverworks/TheOffchainResolver.sol#context-format)
 
@@ -37,7 +37,7 @@ type Context = {
 }
 ```
 * `POST` Endpoints:
-	* `http://localhost/fixed` &rarr; router with slug `"fixed"` and uses **Mainnet TOR** (default) as the receiver
+	* `http://localhost/fixed` &rarr; router with slug `"fixed"` and uses **Mainnet TOR** (default)
 	* `http://localhost/fixed/s` uses **Sepolia TOR** &mdash; see [config.js](./config.js)
 * see `EZCCIP`, `CallContext`, and `History` from [resolverworks/**ezccip**](https://github.com/resolverworks/ezccip.js/blob/main/dist/index.d.ts)
 * see `Record`, `Profile`, `Node` from [resolverworks/**enson**](https://github.com/resolverworks/enson.js/blob/main/dist/index.d.ts)
@@ -46,51 +46,37 @@ type Context = {
 * There are [many demo](./routers/) routers.
 	* Enabled with env `DEMO=1` (default)
 * You may host multiple independent routers simultaneously.
-* [`multirouter(routers: Router[], slug?: string = "multi")`](./src/MultiRouter.js) creates a synthetic router which dispatches `resolve()` to a supplied router by finding the first label that matches a slug.
+* [MultiRouter](./src/MultiRouter.js) is a router that matches a name's label with a router slug.
 	* Example: `/multi` + `"a.b.flat.c.d"` &rarr; `/flat` + `"a.b"`
 	* Enabled with env `MULTI=1` (default)
-* Routers with [`fetch_root()`](./utils/Router.js) like [Tree](#tree-database-via-noderouterjs) automatically have a JSON API:
-	* [`GET /$slug/root`](https://raffy.xyz/tog/tree/tree) → tree-like JSON
+* [NodeRouter](./src/NodeRouter.js) is a router with an automatic JSON API:
+	* Example: [Tree](#tree-database-via-noderouterjs), [Flat](#flat-database)
+	* [`GET /$slug/tree`](https://raffy.xyz/tog/tree/tree) → tree-like JSON
 	* [`GET /$slug/flat`](https://raffy.xyz/tog/tree/flat) → flat-like JSON
 	* [`GET /$slug/names`](https://raffy.xyz/tog/tree/names) → JSON array of names with records
 
-## Demo Routers
+## Examples
 
-### [Fixed Record for ALL Names](./routers/fixed.js)
-
-* [`Record`](./src/Record.js) is a JSON description of an [ENS profile](./test/record.js)
-* Example: ENS [`fixed.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#fixed.tog.raffy.eth)
-* Example: DNS [`raffy.xyz`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#raffy.xyz)
-
-### [Simple {name: address} Database](./routers/simple.js)
-* Database: [`simple.json`](./routers/simple.json) 
-* Example: ENS: [`carl.simple.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#carl.simple.tog.raffy.eth)
-* Example: ENS: [`dave.simple.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#dave.simple.tog.raffy.eth)
-* Example: DNS [`bob.raffy.xyz`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#bob.raffy.xyz)
-
-### [Random Address](./routers/random.js)
-* Example: ENS [`random.fixed.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#random.fixed.tog.raffy.eth)
-* Example: DNS [`random.raffy.xyz`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#random.raffy.xyz)
-
-### [Mainnet On-chain ".eth" Mirror](./routers/mirror.js) via [`MirrorRouter.js`](./src/MirrorRouter.js)
-
-* Example: [`nick.mirror.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#nick.mirror.tog.raffy.eth) ↔ [`raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#nick.eth) 
-* Example:  [`brantly.mirror.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#brantly.mirror.tog.raffy.eth) ↔ [`brantly.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#brantly.eth)
-
-### [Coinbase Exchange Rates](./routers/coinbase.js) 
-
-* Embedded current price in description 
-* Example: [`eth.coinbase.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#eth.coinbase.tog.raffy.eth)
-* Example: [`btc.coinbase.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#btc.coinbase.tog.raffy.eth)
-
-### [Wikipedia](./routers/wikipedia.js)
-
-* Example: [`ethereum.wiki.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#ethereum.wiki.tog.raffy.eth)
-* Example: [`vitalik.wiki.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#vitalik.wiki.tog.raffy.eth)
-
-### [Github](./routers/github.js)
-
-* Example: [`adraffy.github.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#adraffy.github.tog.raffy.eth) via [`ENS.json`](https://github.com/adraffy/adraffy/blob/main/ENS.json)
+* [Fixed Record for ALL Names](./routers/fixed.js)
+	* [`fixed.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#fixed.tog.raffy.eth)
+	* [`raffy.xyz`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#raffy.xyz)
+* [Random Address](./routers/random.js)
+	* [`random.fixed.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#random.fixed.tog.raffy.eth)
+	* [`random.raffy.xyz`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#random.raffy.xyz)
+* [Simple {name: address} Database](./routers/simple.js) &rarr; [`simple.json`](./routers/simple.json) 
+	* [`carl.simple.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#carl.simple.tog.raffy.eth)
+	* [`bob.raffy.xyz`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#bob.raffy.xyz)
+* [Mainnet On-chain ".eth" Mirror](./routers/mirror.js) &rarr; [`MirrorRouter.js`](./src/MirrorRouter.js)
+	* [`nick.eth.mirror.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#nick.eth.mirror.tog.raffy.eth) &lrarr; [`nick.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#nick.eth)
+	* [`brantly.xyz.mirror.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#brantly.xyz.mirror.tog.raffy.eth) &lrarr; [`brantly.xyz`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#brantly.xyz)
+* [Coinbase Exchange Rates](./routers/coinbase.js) 
+	* [`eth.coinbase.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#eth.coinbase.tog.raffy.eth)
+	* [`btc.coinbase.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#btc.coinbase.tog.raffy.eth)
+* [Wikipedia](./routers/wikipedia.js)
+	* [`ethereum.wiki.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#ethereum.wiki.tog.raffy.eth) &lrarr; [Ethereum](https://en.wikipedia.org/wiki/Ethereum)
+	* [`vitalik.wiki.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#vitalik.wiki.tog.raffy.eth)
+* [Github](./routers/github.js)
+	* [`adraffy.github.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#adraffy.github.tog.raffy.eth) via [`ENS.json`](https://github.com/adraffy/adraffy/blob/main/ENS.json)
 
 ### [Tree Database](./routers/tree.js) via [`NodeRouter.js`](./src/NodeRouter.js)
 * Automatic reload after modification

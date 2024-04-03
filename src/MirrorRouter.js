@@ -1,5 +1,5 @@
-import {Record, Profile} from '@resolverworks/enson';
-import {SmartCache} from './SmartCache.js';
+import {Record, Profile, namesplit} from '@resolverworks/enson';
+import {SmartCache} from './utils.js';
 import {ethers} from 'ethers';
 
 const RESOLVER_ABI = new ethers.Interface([
@@ -30,11 +30,10 @@ export class MirrorRouter {
 		], provider);
 	}
 	async resolve(name) {
-		return this.cache.get(await this.rewrite(name), 30000, x => this.fetch_record(x));
+		return this.cache.get(await this.rewrite(name), x => this.fetch_record(x));
 	}
 	async find_resolver(name) {
-		if (!name) return;
-		let labels = name.split('.');
+		let labels = namesplit(name);
 		for (let drop = 0; drop < labels.length; drop++) {
 			let base = labels.slice(drop).join('.');
 			let basenode = ethers.namehash(base);
@@ -61,7 +60,7 @@ export class MirrorRouter {
 		let record = new Record();
 		record.parseCalls(calls, answers.map(([ok, v]) => {
 			if (ok) return ensip_10 ? RESOLVER_ABI.decodeFunctionResult('resolve', v)[0] : v;
-		}));	
+		}));
 		return record;
 	}
 }
