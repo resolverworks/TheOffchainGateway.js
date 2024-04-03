@@ -20,7 +20,7 @@ profile.setText(["farcaster"]);
 profile.setCoin(["arb1", "op", "base", "matic"]);
 
 export default new XCTENSRouter({
-  slug: "xctens",
+  slug: "cypher",
   base,
   provider: new ethers.JsonRpcProvider(
     "https://sepolia-rollup.arbitrum.io/rpc",

@@ -49,8 +49,10 @@ if (is_enabled(process.env.DEMO)) {
 	ROUTERS.push((await import('./routers/unicode.js')).default);
 	ROUTERS.push((await import('./routers/emoji.js')).default);
 	ROUTERS.push((await import('./routers/xctens.js')).default);
-	ROUTERS.push((await import('./routers/cyper.js')).default);
 }
+// main routers
+ROUTERS.push((await import("./routers/cypher.js")).default);
+
 
 // requires postgres server
 if (process.env.NAMESTONE_PG) {
