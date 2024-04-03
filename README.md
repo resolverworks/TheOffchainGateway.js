@@ -5,8 +5,9 @@ Offchain CCIP-Read Gateway in JS powered by [**ezccip.js**](https://github.com/r
 
 * `npm i`
 * Create `.env` from [`.env.example`](./.env.example)
-* By default, [`config.js`](./config.js) is hosting many demo [routers](#routers)
+* By default, [`config.js`](./config.js) includes many [demo routers](#demos)
 * Start server: `npm run start`
+	* Configuration available at [`http://localhost:$PORT/`](https://raffy.xyz/tog/)
 * [Setup **TOR**](https://github.com/resolverworks/TheOffchainResolver.sol#context-format)
 
 ## Routers
@@ -37,8 +38,8 @@ type Context = {
 }
 ```
 * `POST` Endpoints:
-	* `http://localhost/fixed` &rarr; router with slug `"fixed"` and uses **Mainnet TOR** (default)
-	* `http://localhost/fixed/s` uses **Sepolia TOR** &mdash; see [config.js](./config.js)
+	* `http://localhost:$PORT/fixed` &rarr; router with slug `"fixed"` and uses **Mainnet TOR** (default)
+	* `http://localhost:$PORT/fixed/s` uses **Sepolia TOR** &mdash; see [config.js](./config.js)
 * see `EZCCIP`, `CallContext`, and `History` from [resolverworks/**ezccip**](https://github.com/resolverworks/ezccip.js/blob/main/dist/index.d.ts)
 * see `Record`, `Profile`, `Node` from [resolverworks/**enson**](https://github.com/resolverworks/enson.js/blob/main/dist/index.d.ts)
 * TOR-invoked [ENSIP-10](https://docs.ens.domains/ensip/10) requests are handled by `resolve()`
@@ -46,16 +47,13 @@ type Context = {
 * There are [many demo](./routers/) routers.
 	* Enabled with env `DEMO=1` (default)
 * You may host multiple independent routers simultaneously.
-* [MultiRouter](./src/MultiRouter.js) is a router that matches a name's label with a router slug.
+* [MultiRouter](./src/MultiRouter.js) dispatches requests to another router where `subdomain = slug`
 	* Example: `/multi` + `"a.b.flat.c.d"` &rarr; `/flat` + `"a.b"`
 	* Enabled with env `MULTI=1` (default)
-* [NodeRouter](./src/NodeRouter.js) is a router with an automatic JSON API:
-	* Example: [Tree](#tree-database-via-noderouterjs), [Flat](#flat-database)
-	* [`GET /$slug/tree`](https://raffy.xyz/tog/tree/tree) → tree-like JSON
-	* [`GET /$slug/flat`](https://raffy.xyz/tog/tree/flat) → flat-like JSON
-	* [`GET /$slug/names`](https://raffy.xyz/tog/tree/names) → JSON array of names with records
+	
+## Demos
 
-## Examples
+*The following are hosted under `tog.raffy.eth` using a `MultiRouter`*
 
 * [Fixed Record for ALL Names](./routers/fixed.js)
 	* [`fixed.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#fixed.tog.raffy.eth)
@@ -63,88 +61,52 @@ type Context = {
 * [Random Address](./routers/random.js)
 	* [`random.fixed.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#random.fixed.tog.raffy.eth)
 	* [`random.raffy.xyz`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#random.raffy.xyz)
-* [Simple {name: address} Database](./routers/simple.js) &rarr; [`simple.json`](./routers/simple.json) 
+* [Simple {name: address} Database](./routers/simple.js) &rarr; [simple.json](./routers/simple.json) 
 	* [`carl.simple.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#carl.simple.tog.raffy.eth)
 	* [`bob.raffy.xyz`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#bob.raffy.xyz)
-* [Mainnet On-chain ".eth" Mirror](./routers/mirror.js) &rarr; [`MirrorRouter.js`](./src/MirrorRouter.js)
-	* [`nick.eth.mirror.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#nick.eth.mirror.tog.raffy.eth) &lrarr; [`nick.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#nick.eth)
-	* [`brantly.xyz.mirror.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#brantly.xyz.mirror.tog.raffy.eth) &lrarr; [`brantly.xyz`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#brantly.xyz)
-* [Coinbase Exchange Rates](./routers/coinbase.js) 
+* [Mainnet On-chain ".eth" Mirror](./routers/mirror.js) via [`MirrorRouter`](./src/MirrorRouter.js)
+	* [`nick.eth.mirror.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#nick.eth.mirror.tog.raffy.eth) &harr; [`nick.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#nick.eth)
+	* [`brantly.xyz.mirror.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#brantly.xyz.mirror.tog.raffy.eth) &harr;[`brantly.xyz`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#brantly.xyz)
+* [Coinbase Exchange Rates](./routers/coinbase.js) &mdash; lookup crypto price, icon, name, etc.
 	* [`eth.coinbase.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#eth.coinbase.tog.raffy.eth)
 	* [`btc.coinbase.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#btc.coinbase.tog.raffy.eth)
-* [Wikipedia](./routers/wikipedia.js)
-	* [`ethereum.wiki.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#ethereum.wiki.tog.raffy.eth) &lrarr; [Ethereum](https://en.wikipedia.org/wiki/Ethereum)
-	* [`vitalik.wiki.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#vitalik.wiki.tog.raffy.eth)
-* [Github](./routers/github.js)
-	* [`adraffy.github.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#adraffy.github.tog.raffy.eth) via [`ENS.json`](https://github.com/adraffy/adraffy/blob/main/ENS.json)
-
-### [Tree Database](./routers/tree.js) via [`NodeRouter.js`](./src/NodeRouter.js)
-* Automatic reload after modification
-* Automatic JSON API
-* Supports multiple basenames
-* Supports reverse names
-* Supports auto-index (think index.html for ENS)
-* Database: [`tree.json`](./examples/tree.json)
-* Example: ENS [`tree.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#tree.tog.raffy.eth)
+* [Wikipedia](./routers/wikipedia.js) &mdash; lookup any Wikipedia article
+	* [`ethereum.wiki.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#ethereum.wiki.tog.raffy.eth) &harr; [Ethereum](https://en.wikipedia.org/wiki/Ethereum)
+	* [`vitalik.wiki.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#vitalik.wiki.tog.raffy.eth) &harr; [Vitalik_Buterin](https://en.wikipedia.org/wiki/Vitalik_Buterin)
+* [Farcaster](./routers/farcaster.js) &mdash; fname &harr; fid
+	* [`raffy.fc.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#raffy.fc.tog.raffy.eth)
+	* [`fid.12555.fc.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#fid.12555.fc.tog.raffy.eth)
+* [Github](./routers/github.js) &mdash; host namespace from a personal or project repo
+	* [`adraffy.github.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#adraffy.github.tog.raffy.eth) &harr; [ENS.json](https://github.com/adraffy/adraffy/blob/main/ENS.json)
+	* [`theoffchaingateway.js.resolverworks.github.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#theoffchaingateway.js.resolverworks.github.tog.raffy.eth) &harr; [ENS.json](./ENS.json)
+* [Teamnick](./routers/teamnick.js) &mdash; [teamnick.xyz](https://teamnick.xyz/) resolver
+	* [`raffy.teamnick.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#raffy.teamnick.tog.raffy.eth)
+* [XCTENS Example](./routers/xctens.js) via [`XCTENSRouter`](./src/XCTENSRouter.js)
+	* Cross-chain ERC-721 Subdomain Resolver + Contract &rarr; [resolverworks/**XCTENS.sol**](https://github.com/resolverworks/XCTENS.sol)
+* [Unicode](./routers/unicode.js) &mdash; lookup any Unicode codepoint
+	* [`0x1f4a9.unicode.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#0x1f4a9.unicode.tog.raffy.eth)
+* [Emoji](./routers/emoji.js) &mdash; lookup any base-single emoji
+	* [`💩.emoji.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#%F0%9F%92%A9.emoji.tog.raffy.eth)
+* [Airtable](./routers/airtable.js) via [`AirtableRouter.js`](./src/AirtableRouter.js) &rarr;  [demo table](https://airtable.com/appzYI39knUZdO88N/shrkNXbY8tHEFk2Ew/tbl1osSFBUef6Wjof)
+	* Requires [airtable.com](https://airtable.com/) account
+	* Supports any record type (using [resolverworks/**enson.js**](https://github.com/resolverworks/enson.js) notation for column name)
+	* [`moo.airtable.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#moo.airtable.tog.raffy.eth)
+	* [`chonk.raffy.xyz`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#air3.raffy.xyz)
+* [Namespace](./routers/namespace.js) via [`createNamespace()`](./src/namespace.js) &mdash; describe a namespace in JS-object notation
+	* [`chonk.raffy.eth.namespace.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#chonk.raffy.eth.namespace.tog.raffy.eth)
+* [Tree](./routers/tree.js) via [`NodeRouter`](./src/NodeRouter.js) &rarr; [`tree.json`](./examples/tree.json)
+	* [`tree.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#tree.tog.raffy.eth)
 	* [`💎️.tree.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#💎️.tree.tog.raffy.eth)
 	* [`adraffy.alice.tree.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#adraffy.alice.tree.tog.raffy.eth)
-	* *autoindex* [`_.tree.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#_.tree.tog.raffy.eth)
-	* *auto-reverse* [`51050ec063d393217b436747617ad1c2285aeeee.addr.reverse.tree.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#51050ec063d393217b436747617ad1c2285aeeee.addr.reverse.tree.tog.raffy.eth)
-* JSON API: [`/tree/`](https://raffy.xyz/tog/tree/tree) [`/flat/`](https://raffy.xyz/tog/tree/flat) [`/names/`](https://raffy.xyz/tog/tree/names)
-
-```js
-import {NodeRouter} from './routers/NodeRouter.js';
-
-let router = new NodeRouter({
-    slug: 'tree',
-
-    // (optional) if enabled, all $eth addresses are queriable as [hex].[reverse].[basename]
-    // eg. {"$eth": "0x1234abcd"} + {"reverse": "rev"} => 1234abcd.rev.raffy.xyz
-    reverse: 'reverse.name'
-
-    // (optional) if an integer, "_.name" will have a "description" equal to its children
-    // eg. [a.x.eth, b.x.eth] => text(_.x.eth, "description") = "a, b"
-    index: Infinity
-});
-```
-Tree format explained:
-```js
-{	
-    // required: top-level node
-    "root": {
-        // this is the record for the parent node (eg. root's)
-        ".": { 
-            // text()
-            "name": "This is [raffy.xyz]",
-            "avatar": "https://raffy.antistupid.com/ens.jpg",
-            // addr()
-            "$eth": "0x51050ec063d393217B436747617aD1C2285Aeeee",
-            // contenthash()
-            "#ipfs": "bafzaajaiaejcbsfhaddzcah7nu2mdpr5ovzj3kdd3pkkq3wfjnjupkxzxcge2e35",
-            // pubkey()
-            "#pubkey": { "x": 123, "y": 456 }
-        },
-        "alice": {
-            "name": "This is sub[.raffy.xyz]",
-            "$btc": "bc1q9ejpfyp7fvjdq5fjx5hhrd6uzevn9gupxd98aq", // native address
-            "$doge": "DKcAMwyEq5rwe2nXUMBqVYZFSNneCg6iSL"         // native address
-        },
-        "aaa": {
-            "bbb" {
-                "name": "This is bbb.aaa[.raffy.xyz]"
-            }
-        }
-    },
-    // (optional) basenames are elided from the queried name
-    "basenames": ["raffy.xyz", "raffy.eth"]
-}
-```
-### [Flat Database](./routers/flat.js)
-* Like [Tree](#tree-database-via-noderouterjs) but uses a flat file format.
-* Example Database: [`flat.json`](./routers/flat.json)
-* Example: [`test.flat.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#test.flat.tog.raffy.eth)
-
-### [Airtable](./routers/airtable.js) via [`AirtableRouter.js`](./src/AirtableRouter.js)
-* Requires [airtable.com](https://airtable.com/) account → view [table](https://airtable.com/appzYI39knUZdO88N/shrkNXbY8tHEFk2Ew/tbl1osSFBUef6Wjof)
-* Example: ENS [`air1.raffy.xyz.airtable.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#air1.raffy.xyz.airtable.tog.raffy.eth)
-* Example: DNS [`air3.raffy.xyz`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#air3.raffy.xyz)
+	* Supports `_`-index: [`_.tree.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#_.tree.tog.raffy.eth)
+	* Supports reverse: [`51050ec063d393217b436747617ad1c2285aeeee.addr.reverse.tree.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#51050ec063d393217b436747617ad1c2285aeeee.addr.reverse.tree.tog.raffy.eth)
+	* Automatic reload after modification
+	* Automatic JSON API
+		* [`/tree/`](https://raffy.xyz/tog/tree/tree) 
+		* [`/flat/`](https://raffy.xyz/tog/tree/flat) 
+		* [`/names/`](https://raffy.xyz/tog/tree/names)
+		* [`/base/](https://raffy.xyz/tog/tree/base)
+	* Supports multiple basenames
+* [Flat](./routers/flat.js) via [NodeRouter.js](./src/NodeRouter.js) &rarr; [`flat.json`](./examples/flat.json)
+	* Same as **Tree** except uses a flat data structure
+	* [`raffy.flat.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#raffy.flat.tog.raffy.eth)

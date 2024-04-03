@@ -17,7 +17,7 @@ export function createNamespace(slug, namespaces) {
 }
 
 function resolve(name, context, history) {
-	let labels = namesplit('.');
+	let labels = namesplit(name);
 	let node = this.root;
 	let space;
 	let base;
