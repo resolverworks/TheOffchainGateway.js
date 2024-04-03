@@ -101,7 +101,8 @@ export class XCTENSRouter {
 				if (func === 'text') {
 					record.setText(arg, res);
 				} else if (func === 'addr') {
-					record.setAddress(arg, ethers.getBytes(res));
+					let v = ethers.getBytes(res);
+					if (v.length > 0) record.setAddress(arg, v); // quick hack
 				} else if (func === 'contenthash') {
 					record.setChash(ethers.getBytes(res));
 				} else if (func === 'ownerOf') {
