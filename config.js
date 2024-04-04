@@ -5,7 +5,7 @@ import {readdir} from 'node:fs/promises';
 // https://github.com/resolverworks/TheOffchainResolver.sol
 // note: these should of been named better during development
 // only mainnet needs short urls to reduce storage costs
-export const TOR_DEPLOY0 = 'e1';
+export const TOR_DEPLOY0 = 'e1'; // default deployment if unspecified (should always specify!)
 export const TOR_DEPLOYS = {
 	'e1': '0x84c5AdB77dd9f362A1a3480009992d8d47325dc3', // Mainnet (LATEST)
 	's2': '0xf93F7F8002BcfB285D44E9Ef82E711cCD0D502A2', // Sepolia (LATEST)
@@ -52,15 +52,15 @@ if (is_enabled(process.env.DEMO)) {
 }
 
 // production routers
-if (is_enabled(process.env.CYPHER)) {
+if (is_enabled(process.env.NAMESTONE_PROD)) {
 	ROUTERS.push((await import('./routers/cypher.js')).default);
-}
 
-// requires postgres server
-if (process.env.NAMESTONE_PG) {
-	let pg = (await import('./routers/namestone-pg.js')).default
-	ROUTERS.push({...pg, slug: 'namestone-pg', deploy: 'e1'});
-	ROUTERS.push({ ...pg, slug: "pg", deploy: 'e0' });
+	// requires postgres server
+	if (process.env.NAMESTONE_PG) {
+		let pg = (await import('./routers/namestone-pg.js')).default
+		ROUTERS.push({...pg, deploy: 'e1', slug: 'namestone-pg'});
+		ROUTERS.push({...pg, deploy: 'e0', slug: 'pg'});
+	}
 }
 
 // dynamically load any underscored routers
