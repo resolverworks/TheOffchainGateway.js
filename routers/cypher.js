@@ -2,10 +2,6 @@ import { XCTENSRouter } from "../src/XCTENSRouter.js";
 import { Record, Profile, Coin, Node } from "@resolverworks/enson";
 import { ethers } from "ethers";
 
-// example deployment of XCTENS
-// https://github.com/resolverworks/XCTENS.sol
-// https://sepolia.basescan.org/address/0x6f390c35b8b96dfdf42281cec36f1226eed87c6b
-
 const CHAIN = 421614;
 
 // supported basenames
@@ -38,9 +34,9 @@ export default new XCTENSRouter({
     let { target } = this.contract;
     let supply = await this.totalSupply();
     let rec = Record.from({
-      name: `${supply.toLocaleString()} names registered`,
-      description: "XCTENS Demo!",
-      url: `https://sepolia.basescan.org/address/${target}`,
+      name: 'A name for Rebels',
+      description: `${supply.toLocaleString()} names registered on Arbitrum.  Tradable on Opensea.`,
+      url: `https://cu-cypherpunk.com/`,
     });
     rec.setAddress("eth", context.resolver); // the requesting TOR
     rec.setAddress(Coin.fromChain(CHAIN), target);
