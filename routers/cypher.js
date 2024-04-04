@@ -2,7 +2,7 @@ import { XCTENSRouter } from "../src/XCTENSRouter.js";
 import { Record, Profile, Coin, Node } from "@resolverworks/enson";
 import { ethers } from "ethers";
 
-const CHAIN = 421614;
+const CHAIN = 42161;
 
 // supported basenames
 const base = Node.root("base");
@@ -16,12 +16,10 @@ profile.setCoin(["arb1", "op", "base", "matic"]);
 export default new XCTENSRouter({
   slug: "cypher",
   base,
-  provider: new ethers.JsonRpcProvider(
-    "https://sepolia-rollup.arbitrum.io/rpc",
-    CHAIN,
-    { staticNetwork: true }
-  ),
-  contract: "0xcdB7fafde2212ec26F58F275FedF07a6Ef69814c",
+  provider: new ethers.JsonRpcProvider("https://arb1.arbitrum.io/rpc", CHAIN, {
+    staticNetwork: true,
+  }),
+  contract: "0xEC2244b547BD782FC7DeefC6d45E0B3a3cbD488d",
   async init() {
     console.log({
       bases: base.collect((x) => (x.is_base ? x.name : undefined)),
@@ -34,7 +32,7 @@ export default new XCTENSRouter({
     let { target } = this.contract;
     let supply = await this.totalSupply();
     let rec = Record.from({
-      name: 'A name for Rebels',
+      name: "A name for Rebels",
       description: `${supply.toLocaleString()} names registered on Arbitrum.  Tradable on Opensea.`,
       url: `https://cu-cypherpunk.com/`,
     });
