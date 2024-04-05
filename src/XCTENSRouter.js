@@ -25,7 +25,7 @@ class XCTENSRecord {
 	async text(key) {
 		if (key === 'owner') {
 			let [owner, network] = await Promise.all([this.fetch('ownerOf'), this.router.provider.getNetwork()]);
-			return `eip155:${network.chainId}/${owner}`;
+			return `eip155:${network.chainId}:${owner}`;
 		} else {
 			return this.fetch('text', key);
 		}
