@@ -2,7 +2,7 @@ import {Record} from '@resolverworks/enson';
 import {ethers} from 'ethers';
 import {ens_normalize, ens_emoji, ens_beautify, ens_tokenize} from '@adraffy/ens-normalize';
 import {data_url_short_cps} from './utils.js';
-import {SmartCache} from '../src/utils.js';
+import {SmartCache} from '../src/SmartCache.js';
 
 const cache = new SmartCache();
 

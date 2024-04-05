@@ -1,5 +1,6 @@
 import {Record} from '@resolverworks/enson';
-import {log, safe_name, SmartCache} from '../src/utils.js';
+import {log, safe_name} from '../src/utils.js';
+import {SmartCache} from '../src/SmartCache.js';
 import postgres from 'postgres';
 
 const sql = postgres(process.env.NAMESTONE_PG);

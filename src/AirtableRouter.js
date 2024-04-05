@@ -1,5 +1,6 @@
 import {Record} from '@resolverworks/enson';
-import {log, safe_name, SmartCache} from './utils.js';
+import {log, safe_name} from './utils.js';
+import {SmartCache} from './SmartCache.js';
 
 export class AirtableRouter {
 	constructor({slug, secret, base, field = 'name'}) {

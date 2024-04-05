@@ -1,7 +1,8 @@
 import {Record} from '@resolverworks/enson';
 import {ens_normalize, safe_str_from_cps, should_escape} from '@adraffy/ens-normalize';
 import {data_url_short_cps} from './utils.js';
-import {nth_label, SmartCache} from '../src/utils.js';
+import {nth_label} from '../src/utils.js';
+import {SmartCache} from '../src/SmartCache.js';
 
 const cache = new SmartCache();
 const MAX_CP = 0x10FFFF;

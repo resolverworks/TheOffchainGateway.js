@@ -15,6 +15,15 @@ export class NodeRouter {
 	async init() {
 		await this.loaded(); // ensure the database loads the first time
 	}
+	async GET({reply, path}) {
+		let {root, base} = await this.loaded();
+		switch (path) {
+			case '/base':  return reply.json(base);
+			case '/tree':  return reply.json(root);
+			case '/names': return reply.json(root.collect(x => x.name));
+			case '/flat':  return reply.json(root.collect(x => x.record ? [x.name, x.record] : undefined));
+		}
+	}
 	async resolve(name) {
 		let {root, base} = await this.loaded();
 		return root.find(drop_base(base, name))?.record;

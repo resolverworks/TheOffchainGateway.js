@@ -1,5 +1,6 @@
 import {Record} from '@resolverworks/enson';
-import {nth_label, safe_name, log, curlyquote, SmartCache} from '../src/utils.js';
+import {nth_label, safe_name, log, curlyquote} from '../src/utils.js';
+import {SmartCache} from '../src/SmartCache.js';
 
 const cache = new SmartCache();
 

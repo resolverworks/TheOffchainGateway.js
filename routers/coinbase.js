@@ -1,6 +1,7 @@
 import {Record} from '@resolverworks/enson';
-import {log, SmartCache} from '../src/utils.js';
+import {log} from '../src/utils.js';
 import {ethers} from 'ethers';
+import {SmartCache} from '../src/SmartCache.js';
 
 const cache = new SmartCache();
 

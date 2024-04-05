@@ -86,6 +86,9 @@ type Context = {
 	* [`0x1f4a9.unicode.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#0x1f4a9.unicode.tog.raffy.eth)
 * [Emoji](./routers/emoji.js) &mdash; lookup any base-single emoji
 	* [`💩.emoji.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#%F0%9F%92%A9.emoji.tog.raffy.eth)
+* [ENS Registrations](./routers/ensregs.js) &mdash; latest registrations by index
+	* [`ensregs.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#ensregs.tog.raffy.eth)
+	* [`3.emoji.ensregs.tog.raffy.eth`](https://adraffy.github.io/ens-normalize.js/test/resolver.html#3.emoji.ensregs.tog.raffy.eth)
 * [Airtable](./routers/airtable.js) via [`AirtableRouter.js`](./src/AirtableRouter.js) &rarr; [demo table](https://airtable.com/appzYI39knUZdO88N/shrkNXbY8tHEFk2Ew/tbl1osSFBUef6Wjof)
 	* Requires [airtable.com](https://airtable.com/) account
 	* Supports any record type (using [resolverworks/**enson.js**](https://github.com/resolverworks/enson.js) notation for column name)

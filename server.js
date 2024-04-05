@@ -1,9 +1,30 @@
-import {createServer} from 'node:http';
+import {createServer, IncomingMessage, OutgoingMessage} from 'node:http';
 import {EZCCIP} from '@resolverworks/ezccip';
 import {ethers} from 'ethers';
 import {log, error_with} from './src/utils.js';
 import {ROUTERS, TOR_DEPLOYS, TOR_DEPLOY0} from './config.js';
-import {NodeRouter} from './src/NodeRouter.js';
+
+IncomingMessage.prototype.read_body = async function() {
+	let v = [];
+	for await (const x of this) v.push(x);
+	return Buffer.concat(v);
+};
+IncomingMessage.prototype.read_json = async function() { 
+	try {
+		return JSON.parse(await this.read_body());
+	} catch (err) {
+		throw error_with('malformed JSON', {status: 422}, err);
+	}
+};
+OutgoingMessage.prototype.json = function(json) {
+	let buf = Buffer.from(JSON.stringify(json, (k, v) => {
+		if (v instanceof Uint8Array) return ethers.hexlify(v);
+		return v;
+	}));
+	this.setHeader('Content-Length', buf.length);
+	this.setHeader('Content-Type', 'application/json');
+	this.end(buf);
+};
 
 const PORT = parseInt(process.env.HTTP_PORT);
 
@@ -28,39 +49,36 @@ const http = createServer(async (req, reply) => {
 		switch (req.method) {
 			case 'GET': {
 				if (url.pathname === '/') {
-					return write_json(reply, {
+					return reply.json({
 						greeting: 'Hello from TheOffchainGateway!',
 						signer,
 						routers: [...routers.keys()],
 						TOR_DEPLOYS,
 					});
 				}
-				let [_, slug, ...rest] = url.pathname.split('/');
-				let router = require_router(slug);
-				if (router instanceof NodeRouter) {
-					let {root, base} = await router.loaded();
-					switch (rest.join('/')) {
-						case 'base':  return write_json(reply, base);
-						case 'tree':  return write_json(reply, root);
-						case 'names': return write_json(reply, root.collect(x => x.name));
-						case 'flat':  return write_json(reply, root.collect(x => x.record ? [x.name, x.record] : undefined));
+				let [slug, path] = drop_path_component(url.pathname);
+				if (slug) {
+					let router = require_router(slug);
+					await router.GET?.({req, reply, path, url});
+					if (reply.writableEnded) {
+						log(ip, router.slug, 'GET', path);
+						return;
 					}
 				}
 				throw error_with('file not found', {status: 404});
 			}
 			case 'OPTIONS': return reply.setHeader('access-control-allow-headers', '*').end();
 			case 'POST': {
-				let path = url.pathname.slice(1);
-				if (path.endsWith('/')) path = path.slice(0, -1); // drop trailing slash
-				let [slug, deploy] = path.split('/');
+				let [slug, rest] = drop_path_component(url.pathname);
 				let router = require_router(slug);
+				let [deploy] = drop_path_component(rest);
 				if (!deploy) deploy = router.deploy ?? TOR_DEPLOY0;
 				let resolver = TOR_DEPLOYS[deploy];
 				if (!resolver) throw error_with(`resolver "${deploy}" not found`, {status: 404});
-				let {sender, data: calldata} = await read_json(req);
+				let {sender, data: calldata} = await req.read_json();
 				let {data, history} = await ezccip.handleRead(sender, calldata, {signingKey, resolver, router, routers, ip});
 				log(ip, `${router.slug}/${deploy}`, history.toString());
-				return write_json(reply, {data});
+				return reply.json({data});
 			}
 			default: throw error_with('unsupported http method', {status: 405});
 		}
@@ -74,7 +92,7 @@ const http = createServer(async (req, reply) => {
 			message = 'unknown error';
 		}
 		reply.statusCode = status;
-		write_json(reply, {message});
+		reply.json({message});
 	}
 });
 
@@ -99,23 +117,14 @@ http.listen(PORT).once('listening', () => {
 	console.log(`Listening on ${http.address().port}`);
 });
 
-function write_json(reply, json) {
-	let buf = Buffer.from(JSON.stringify(json));
-	reply.setHeader('content-length', buf.length);
-	reply.setHeader('content-type', 'application/json');
-	reply.end(buf);
+function drop_path_component(s) {
+	if (!s) return [];
+	let i = s.indexOf('/', 1);
+	if (i < 1) return [s.slice(1)];
+	return [s.slice(1, i), s.slice(i)];
 }
-
-async function read_body(req) {
-	let v = [];
-	for await (let x of req) v.push(x);
-	return Buffer.concat(v);
-}
-
-async function read_json(req) {
-	try {
-		return JSON.parse(await read_body(req));
-	} catch (err) {
-		throw error_with('malformed JSON', {status: 422}, err);
-	}
-}
+	
+// function split_path(s) {
+// 	s = s.slice(1).replace(/\/$/, ''); // drop trailing slash
+// 	return s ? s.split('/') : [];
+// }
