@@ -19,7 +19,7 @@ export class TimedCache {
 		map.set(key, [exp, value]);
 	}
 	get(key) {
-		return this.map.get(key)?.[1];
+		return this.map.get(key);
 	}
 	restart(t) {
 		clearTimeout(this.timer);

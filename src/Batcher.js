@@ -34,8 +34,8 @@ export class Batcher {
 	}
 	add(item) {
 		let key = this.key_fn(item); // convert the request to a hash
-		let value = this.cache.get(key); // check if already cached
-		if (value !== undefined) return value; // was cached
+		let temp = this.cache.get(key); // check if already cached
+		if (temp) return temp[1]; // was cached
 		let p = this.pending.get(key); // check if inflight
 		if (p) return p; // was inflight
 		if (this.queue && this.queue.length >= this.max) { // check if batch is full
