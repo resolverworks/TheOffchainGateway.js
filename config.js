@@ -54,7 +54,7 @@ if (is_enabled(process.env.DEMO)) {
 // production routers
 if (is_enabled(process.env.NAMESTONE_PROD)) {
 	ROUTERS.push((await import('./routers/cypher.js')).default);
-
+	ROUTERS.push((await import("./routers/teamnick.js")).default);
 	// requires postgres server
 	if (process.env.NAMESTONE_PG) {
 		let pg = (await import('./routers/namestone-pg.js')).default
