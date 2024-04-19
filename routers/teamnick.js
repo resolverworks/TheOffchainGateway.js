@@ -1,11 +1,15 @@
 import {ethers} from 'ethers';
-import {Record} from '@resolverworks/enson';
-import {is_null_hex, curlyquote, log} from '../src/utils.js';
+import {Record, Node} from '@resolverworks/enson';
+import {is_null_hex, curlyquote, log, drop_base} from '../src/utils.js';
 import {SmartCache} from '../src/SmartCache.js';
 
 const CONTRACT = '0x7C6EfCb602BC88794390A0d74c75ad2f1249A17f';
 const WEBSITE = 'https://teamnick.xyz/';
 const BASENAME = 'teamnick.xyz';
+
+// supported basenames
+const BASE = Node.root('base');
+BASE.create('teamnick.eth').is_base = true;
 
 const cache = new SmartCache();
 const provider = new ethers.JsonRpcProvider('https://mainnet.base.org', 8453, {staticNetwork: true});
@@ -36,6 +40,7 @@ for (let x of calls) {
 export default {
 	slug: 'teamnick',
 	async resolve(name) {
+		name = drop_base(BASE, name);
 		if (!name || name.includes('.')) {
 			let supply = await cache.get('#', () => contract.totalSupply());
 			return Record.from({
