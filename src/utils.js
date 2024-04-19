@@ -1,7 +1,6 @@
 import {error_with, asciiize} from '@resolverworks/ezccip';
 import {namesplit} from '@resolverworks/enson';
 
-export {SmartCache} from './SmartCache.js';
 export {error_with};
 
 // TODO: maybe move this to enson

@@ -1,5 +1,5 @@
 import {Record, Profile, namesplit} from '@resolverworks/enson';
-import {SmartCache} from './utils.js';
+import {SmartCache} from './SmartCache.js';
 import {ethers} from 'ethers';
 
 const RESOLVER_ABI = new ethers.Interface([

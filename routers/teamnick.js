@@ -1,6 +1,7 @@
 import {ethers} from 'ethers';
 import {Record} from '@resolverworks/enson';
-import {is_null_hex, curlyquote, log, SmartCache} from '../src/utils.js';
+import {is_null_hex, curlyquote, log} from '../src/utils.js';
+import {SmartCache} from '../src/SmartCache.js';
 
 const CONTRACT = '0x7C6EfCb602BC88794390A0d74c75ad2f1249A17f';
 const WEBSITE = 'https://teamnick.xyz/';
