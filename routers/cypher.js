@@ -19,7 +19,7 @@ export default new XCTENSRouter({
   contract: "0xEC2244b547BD782FC7DeefC6d45E0B3a3cbD488d",
   // called when the basename is resolved
   async resolveBasename(context) {
-    let { target } = this.contract;
+    let { target } = this.nft;
     let supply = await this.totalSupply();
     let rec = Record.from({
       name: "A name for Rebels",
