@@ -99,7 +99,7 @@ const http = createServer(async (req, reply) => {
 for (let r of ROUTERS) {
 	try {
 		if (!r.slug || !/^[a-z0-9-]+$/.test(r.slug)) throw new Error('expected slug');
-		let other = routers.has(r.slug);
+		let other = routers.get(r.slug);
 		if (other === r) continue; // already exists
 		if (other) throw new Error(`duplicate slug: ${r.slug}`);
 		routers.set(r.slug, r);
