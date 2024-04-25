@@ -25,6 +25,7 @@ class XCTENSRecord {
 	async text(key) {
 		if (key === 'owner') {
 			let [owner, network] = await Promise.all([this.fetch('ownerOf'), this.router.provider.getNetwork()]);
+			// https://namespaces.chainagnostic.org/eip155/caip10
 			return `eip155:${network.chainId}:${owner}`;
 		} else {
 			return this.fetch('text', key);

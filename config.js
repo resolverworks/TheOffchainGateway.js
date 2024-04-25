@@ -26,7 +26,7 @@ export const TOR_DEPLOYS = {
 export const ROUTERS = [];
 
 function is_enabled(s) {
-	return s && !/^false|0$/i.test(s);
+	return s && !/^(0+|false)$/i.test(s);
 }
 
 // load in demo routers
@@ -50,6 +50,7 @@ if (is_enabled(process.env.DEMO)) {
 	ROUTERS.push((await import('./routers/emoji.js')).default);
 	ROUTERS.push((await import('./routers/xctens.js')).default);
 	ROUTERS.push((await import('./routers/ensregs.js')).default);
+	ROUTERS.push((await import('./routers/mydns.js')).default);
 }
 
 // production routers

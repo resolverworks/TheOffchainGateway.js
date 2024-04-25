@@ -76,7 +76,7 @@ const http = createServer(async (req, reply) => {
 				let resolver = TOR_DEPLOYS[deploy];
 				if (!resolver) throw error_with(`resolver "${deploy}" not found`, {status: 404});
 				let {sender, data: calldata} = await req.read_json();
-				let {data, history} = await ezccip.handleRead(sender, calldata, {signingKey, resolver, router, routers, ip});
+				let {data, history} = await ezccip.handleRead(sender, calldata, {signingKey, resolver, router, routers, ip, searchParams: url.searchParams});
 				log(ip, `${router.slug}/${deploy}`, history.toString());
 				return reply.json({data});
 			}
