@@ -73,7 +73,7 @@ export class SmartCache {
 		if (Array.isArray(p)) { 
 			let [exp, q] = p;
 			if (exp > clock()) return q; // still valid
-			cached.remove(key); // expired
+			cached.delete(key); // expired
 		}
 		let {pending, max_pending} = this;
 		if (pending.size >= max_pending) throw new Error('busy'); // too many in-flight
