@@ -78,6 +78,7 @@ const http = createServer(async (req, reply) => {
 				let {sender, data: calldata} = await req.read_json();
 				let {data, history} = await ezccip.handleRead(sender, calldata, {signingKey, resolver, router, routers, ip, searchParams: url.searchParams});
 				log(ip, `${router.slug}/${deploy}`, history.toString());
+				log(data)
 				return reply.json({data});
 			}
 			default: throw error_with('unsupported http method', {status: 405});
