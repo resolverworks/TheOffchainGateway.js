@@ -76,7 +76,7 @@ const http = createServer(async (req, reply) => {
 				let resolver = TOR_DEPLOYS[deploy];
 				if (!resolver) throw error_with(`resolver "${deploy}" not found`, {status: 404});
 				let {sender, data: calldata} = await req.read_json();
-				let {data, history} = await ezccip.handleRead(sender, calldata, {signingKey, resolver, router, routers, ip});
+				let {data, history} = await ezccip.handleRead(sender, calldata, {signingKey, resolver, router, routers, ip, searchParams: url.searchParams});
 				log(ip, `${router.slug}/${deploy}`, history.toString());
 				return reply.json({data});
 			}
@@ -99,7 +99,9 @@ const http = createServer(async (req, reply) => {
 for (let r of ROUTERS) {
 	try {
 		if (!r.slug || !/^[a-z0-9-]+$/.test(r.slug)) throw new Error('expected slug');
-		if (routers.has(r.slug)) throw new Error(`duplicate slug: ${r.slug}`);
+		let other = routers.get(r.slug);
+		if (other === r) continue; // already exists
+		if (other) throw new Error(`duplicate slug: ${r.slug}`);
 		routers.set(r.slug, r);
 		await r.init?.(ezccip);
 		log(r.slug, 'ready');
