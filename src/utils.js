@@ -26,10 +26,7 @@ export function curlyquote(s) {
 }
 
 export function log(...a) {
-	let date = new Date();
-	let time = date.toLocaleTimeString(undefined, {hour12: false});
-	date = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-	console.log(date, time, ...a);
+	console.log(...a);
 }
 
 export function is_null_hex(s) {
