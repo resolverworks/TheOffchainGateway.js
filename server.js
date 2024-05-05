@@ -78,7 +78,6 @@ const http = createServer(async (req, reply) => {
 				let {sender, data: calldata} = await req.read_json();
 				let {data, history} = await ezccip.handleRead(sender, calldata, {signingKey, resolver, router, routers, ip, searchParams: url.searchParams});
 				log(ip, `${router.slug}/${deploy}`, history.toString());
-				log(data)
 				return reply.json({data});
 			}
 			default: throw error_with('unsupported http method', {status: 405});
@@ -126,8 +125,3 @@ function drop_path_component(s) {
 	if (i < 1) return [s.slice(1)];
 	return [s.slice(1, i), s.slice(i)];
 }
-	
-// function split_path(s) {
-// 	s = s.slice(1).replace(/\/$/, ''); // drop trailing slash
-// 	return s ? s.split('/') : [];
-// }
