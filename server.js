@@ -41,7 +41,7 @@ function require_router(slug) {
 const ezccip = new EZCCIP();
 ezccip.enableENSIP10((name, context, history) => {
 	// RESOLUTION LOG
-	console.log("RESOLUTION LOG", {name, router: context.router.slug, contract: context.resolver, ip: context.ip, searchParams: context.searchParams, history: history.toString()});
+	console.log(`RESOLUTION LOG,  name: ${name}, router: ${context.router.slug}, contract: ${context.resolver}, ip: ${context.ip}, searchParams: ${JSON.stringify(context.searchParams)}, history: ${history.toString()}`);
 	context.router.resolve(name, context, history)});
 
 const http = createServer(async (req, reply) => {
