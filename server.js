@@ -128,8 +128,3 @@ function drop_path_component(s) {
 	if (i < 1) return [s.slice(1)];
 	return [s.slice(1, i), s.slice(i)];
 }
-	
-// function split_path(s) {
-// 	s = s.slice(1).replace(/\/$/, ''); // drop trailing slash
-// 	return s ? s.split('/') : [];
-// }

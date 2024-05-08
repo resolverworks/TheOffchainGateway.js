@@ -60,6 +60,7 @@ export class NodeRouter {
 				if (!record) return;
 				let address = record.getAddress(60); // TODO: assuming mainnet
 				if (!address) return;
+				if (!record.name()) record.setName(node.name); // hum...
 				let label = address.toPhex().slice(2).toLowerCase();
 				if (!rnode.has(label)) { // use the first match
 					rnode.create(label).record = record;
