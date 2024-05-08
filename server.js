@@ -39,7 +39,10 @@ function require_router(slug) {
 }
 
 const ezccip = new EZCCIP();
-ezccip.enableENSIP10((name, context, history) => context.router.resolve(name, context, history));
+ezccip.enableENSIP10((name, context, history) => {
+	// RESOLUTION LOG
+	console.log("RESOLUTION LOG", {name, router: context.router.slug, contract: context.resolver, ip: context.ip, searchParams: context.searchParams, history: history.toString()});
+	context.router.resolve(name, context, history)});
 
 const http = createServer(async (req, reply) => {
 	let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
@@ -78,7 +81,6 @@ const http = createServer(async (req, reply) => {
 				let {sender, data: calldata} = await req.read_json();
 				let {data, history} = await ezccip.handleRead(sender, calldata, {signingKey, resolver, router, routers, ip, searchParams: url.searchParams});
 				log(ip, `${router.slug}/${deploy}`, history.toString());
-				log(data)
 				return reply.json({data});
 			}
 			default: throw error_with('unsupported http method', {status: 405});
