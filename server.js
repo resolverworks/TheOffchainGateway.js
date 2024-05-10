@@ -42,7 +42,7 @@ const ezccip = new EZCCIP();
 ezccip.enableENSIP10((name, context, history) => {
 	// RESOLUTION LOG
 	console.log(`RESOLUTION LOG,  name: ${name}, router: ${context.router.slug}, contract: ${context.resolver}, ip: ${context.ip}, searchParams: ${JSON.stringify(context.searchParams)}, history: ${history.toString()}`);
-	context.router.resolve(name, context, history)});
+	return context.router.resolve(name, context, history)});
 
 const http = createServer(async (req, reply) => {
 	let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
