@@ -21,6 +21,7 @@ export const TOR_DEPLOYS = {
 	'd1': '0xa4407E257Aa158C737292ac95317a29b4C90729D', // DNS Mainnet (this was '' before)
 	'ds': '0x179Be112b24Ad4cFC392eF8924DfA08C20Ad8583', // DNS Sepolia
 	'eg': '0x2e513399b2c5337e82a0a71992cbd09b78170843', // ENS Goerli
+	'o1': '0xd17347fA0a6eeC89a226c96a9ae354F785e94241', // New deploy
 
 	// tunnel
 	'sot': '0xCa71342cB02714374e61e400f172FF003497B2c2', // Sepolia
@@ -66,6 +67,7 @@ if (is_enabled(process.env.NAMESTONE_PROD)) {
 		let pg = (await import('./routers/namestone-pg.js')).default
 		ROUTERS.push({...pg, deploy: 'e1', slug: 'namestone-pg'});
 		ROUTERS.push({...pg, deploy: 'e0', slug: 'pg'});
+		ROUTERS.push({ ...pg, deploy: "o1", slug: "namestone-pg-o1" });
 	}
 }
 
