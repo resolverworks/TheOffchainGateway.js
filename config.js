@@ -67,7 +67,6 @@ if (is_enabled(process.env.NAMESTONE_PROD)) {
 		let pg = (await import('./routers/namestone-pg.js')).default
 		ROUTERS.push({...pg, deploy: 'e1', slug: 'namestone-pg'});
 		ROUTERS.push({...pg, deploy: 'e0', slug: 'pg'});
-		ROUTERS.push({ ...pg, deploy: "o1", slug: "namestone-pg-o1" });
 	}
 }
 
