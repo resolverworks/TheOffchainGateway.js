@@ -38,9 +38,45 @@ function require_router(slug) {
 	return router;
 }
 
+function sendResolutionLog({
+  name,
+  gateway,
+  router,
+  contract,
+  ip,
+}) {
+  fetch("https://namestone-reporting.onrender.com/api/log_resolution", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name,
+      gateway,
+      router,
+      contract,
+      ip,
+    }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log("Log submitted:", data);
+    })
+    .catch((error) => {
+      console.error("Error submitting log:", error);
+    });
+}
+
+
 const ezccip = new EZCCIP();
 ezccip.enableENSIP10((name, context, history) => {
 	// RESOLUTION LOG
+	sendResolutionLog({name: name, gateway: "OffchainGateway", router: context.router.slug, contract: context.resolver, ip: context.ip});
 	console.log(`RESOLUTION LOG,  name: ${name}, router: ${context.router.slug}, contract: ${context.resolver}, ip: ${context.ip}, searchParams: ${JSON.stringify(context.searchParams)}, history: ${history.toString()}`);
 	return context.router.resolve(name, context, history)});
 
