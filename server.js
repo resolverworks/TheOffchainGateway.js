@@ -76,7 +76,7 @@ function sendResolutionLog({
 const ezccip = new EZCCIP();
 ezccip.enableENSIP10((name, context, history) => {
 	// RESOLUTION LOG
-	sendResolutionLog({name: name, gateway: "OffchainGateway", router: context.router.slug, contract: context.resolver, ip: context.ip});
+	sendResolutionLog({name: name, gateway: "OffchainGateway", router: context.router.slug, contract: context.resolver.toString(), ip: context.ip});
 	console.log(`RESOLUTION LOG,  name: ${name}, router: ${context.router.slug}, contract: ${context.resolver}, ip: ${context.ip}, searchParams: ${JSON.stringify(context.searchParams)}, history: ${history.toString()}`);
 	return context.router.resolve(name, context, history)});
 
