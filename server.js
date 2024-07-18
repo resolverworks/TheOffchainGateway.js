@@ -76,7 +76,6 @@ function sendResolutionLog({
 const ezccip = new EZCCIP();
 ezccip.enableENSIP10((name, context, history) => {
 	// RESOLUTION LOG
-	sendResolutionLog({name: name, gateway: "OffchainGateway", router: context.router.slug, contract: context.resolver.toString(), ip: context.ip});
 	console.log(`RESOLUTION LOG,  name: ${name}, router: ${context.router.slug}, contract: ${context.resolver}, ip: ${context.ip}, searchParams: ${JSON.stringify(context.searchParams)}, history: ${history.toString()}`);
 	return context.router.resolve(name, context, history)});
 
@@ -116,6 +115,10 @@ const http = createServer(async (req, reply) => {
 				if (!resolver) throw error_with(`resolver "${deploy}" not found`, {status: 404});
 				let {sender, data: calldata} = await req.read_json();
 				let {data, history} = await ezccip.handleRead(sender, calldata, {signingKey, resolver, router, routers, ip, searchParams: url.searchParams});
+				if (history.toString().includes(".addr()")){
+				   const name = history.toString().split(").addr()")[0].split("resolve(")[1]; 
+				   sendResolutionLog({name: name, gateway: "OffchainGateway", router: router.slug, contract: deploy.toString(), ip: ip});
+				}
 				log(ip, `${router.slug}/${deploy}`, history.toString());
 				return reply.json({data});
 			}
