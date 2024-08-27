@@ -36,9 +36,10 @@ async function find_domain(name) {
 }
 
 async function get_domain_record(domain) {
-  let [[{ n }], texts] = await Promise.all([
+  let [[{ n }], texts, coins] = await Promise.all([
     sql`SELECT COUNT(*) AS n FROM subdomain WHERE domain_id = ${domain.id}`,
     sql`SELECT * FROM domain_text_record WHERE domain_id = ${domain.id}`,
+    sql`SELECT * FROM domain_coin_type WHERE domain_id = ${domain.id}`,
   ]);
   let rec = new Record();
   rec.set(
@@ -50,6 +51,8 @@ async function get_domain_record(domain) {
   if (domain.address) rec.setAddress(60, domain.address);
   if (domain.contenthash) rec.setChash(domain.contenthash);
   for (let { key, value } of texts) rec.setText(key, value);
+  for (let { coin_type, address } of coins)
+    rec.setAddress(BigInt(coin_type), address);
   return rec;
 }
 
