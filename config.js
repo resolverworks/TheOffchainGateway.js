@@ -11,7 +11,6 @@ export const TOR_DEPLOYS = {
 	'e4': '0x7CE6Cf740075B5AF6b1681d67136B84431B43AbD', // Mainnet (v4)
 	's4': '0x3c187BAb6dC2C94790d4dA5308672e6F799DcEC3', // Sepolia (v4)
 
-	// old
 	 'g': '0x9b87849Aa21889343b6fB1E146f9F734ecFA9982', // Goerli
 	'g2': '0x8e1af190fB76198b86C83c5EFe2Fb0ADC1cbD50F', // Goerli
 	 's': '0x9Ec7f2ce83fcDF589487303fA9984942EF80Cb39', // Sepolia
@@ -21,7 +20,8 @@ export const TOR_DEPLOYS = {
 	'd1': '0xa4407E257Aa158C737292ac95317a29b4C90729D', // DNS Mainnet (this was '' before)
 	'ds': '0x179Be112b24Ad4cFC392eF8924DfA08C20Ad8583', // DNS Sepolia
 	'eg': '0x2e513399b2c5337e82a0a71992cbd09b78170843', // ENS Goerli
-	'o1': '0xd17347fA0a6eeC89a226c96a9ae354F785e94241', // New deploy
+	'o1': '0xd17347fA0a6eeC89a226c96a9ae354F785e94241', // Hybrid deploy mainnet
+	'o2': "0xA87361C4E58B619c390f469B9E6F27d759715125", // New Hybrid deploy mainnet with onchain priority
 
 	// tunnel
 	'sot': '0xCa71342cB02714374e61e400f172FF003497B2c2', // Sepolia
