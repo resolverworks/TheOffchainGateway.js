@@ -56,12 +56,15 @@ if (is_enabled(process.env.DEMO)) {
 	ROUTERS.push((await import('./routers/xctens.js')).default);
 	ROUTERS.push((await import('./routers/ensregs.js')).default);
 	ROUTERS.push((await import('./routers/mydns.js')).default);
+	ROUTERS.push((await import('./routers/durin.js')).default);
 }
 
 // production routers
 if (is_enabled(process.env.NAMESTONE_PROD)) {
 	ROUTERS.push((await import('./routers/cypher.js')).default);
 	ROUTERS.push((await import("./routers/teamnick.js")).default);
+	ROUTERS.push((await import("./routers/durin.js")).default);
+
 	// requires postgres server
 	if (process.env.NAMESTONE_PG) {
 		let pg = (await import('./routers/namestone-pg.js')).default
