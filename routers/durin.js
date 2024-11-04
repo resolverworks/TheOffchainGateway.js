@@ -98,13 +98,15 @@ async function get_link(name) {
     if (address === ethers.ZeroAddress) return;
     const resolver = new ethers.Contract(address, RESOLVER_ABI, src_provider);
     const wild = await resolver.supportsInterface("0x9061b923");
-    const config = await resolver.text(node, "ccip.registry");
+    const config = await resolver.text(node, "registry");
     const match = config.match(/^(\d+):(0x[0-9a-f]{40})$/i);
     if (!match) throw new Error(`expected: CHAIN:0xADDRESS`);
     const chain = BigInt(match[1]);
     const provider = dst_providers.get(chain);
     if (!provider) throw new Error(`unsupported chain: ${chain}`);
     const registry = new ethers.Contract(match[2], REGISTRY_ABI, provider);
+    console.log(`found: ${name} ${wild ? "wild" : ""}`);
+    console.log(`registry: ${match[2]}`);
     return { name, node, resolver, wild, registry, chain };
   });
 }
