@@ -61,7 +61,7 @@ const ens = new ethers.Contract(
 );
 
 export default {
-  slug: "durin",
+  slug: "durin-sepolia",
   async resolve(name) {
     const { link, labels } = await cache.get(name, find_base);
     if (!link) return;
