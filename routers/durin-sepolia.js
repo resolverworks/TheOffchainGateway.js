@@ -25,7 +25,7 @@ function create_provider(chain, rpc) {
 
 //const src_provider = createProvider(1n, 'https://rpc.ankr.com/eth');
 const src_provider = create_provider(
-  1,
+  11155111,
   "https://eth-sepolia.g.alchemy.com/v2/" + process.env.ALCHEMY_KEY
 );
 
