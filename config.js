@@ -23,6 +23,10 @@ export const TOR_DEPLOYS = {
 	'o1': '0xd17347fA0a6eeC89a226c96a9ae354F785e94241', // Hybrid deploy mainnet
 	'o2': "0xA87361C4E58B619c390f469B9E6F27d759715125", // New Hybrid deploy mainnet with onchain priority
 
+	//DURIN
+	'sd1': "0x00f9314C69c3e7C37b3C7aD36EF9FB40d94eDDe1", // Durin Sepolia (v1)
+	'ed1': "0x2A6C785b002Ad859a3BAED69211167C7e998aAeC", // Durin Mainnet (v1)
+
 	// tunnel
 	'sot': '0xCa71342cB02714374e61e400f172FF003497B2c2', // Sepolia
 };
