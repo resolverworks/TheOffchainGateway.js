@@ -100,7 +100,9 @@ async function get_link(name) {
     const wild = await resolver.supportsInterface("0x9061b923");
     const config = await resolver.text(node, "registry");
     const match = config.match(/^(\d+):(0x[0-9a-f]{40})$/i);
-    if (!match) throw new Error(`expected: CHAIN:0xADDRESS`);
+    if (!match) {
+      throw new Error(`expected: CHAIN:0xADDRESS. Recieved ${config}`);
+    }
     const chain = BigInt(match[1]);
     const provider = dst_providers.get(chain);
     if (!provider) throw new Error(`unsupported chain: ${chain}`);
