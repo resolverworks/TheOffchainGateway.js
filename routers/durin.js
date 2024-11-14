@@ -35,18 +35,96 @@ async function add_provider(provider) {
   dst_providers.set(chainId, provider);
 }
 await add_provider(src_provider);
-await add_provider(
-  create_provider(
-    139,
-    "https://polygon-mainnet.g.alchemy.com/v2/" + process.env.ALCHEMY_KEY
-  )
-);
+// List of chain providers with complete RPC endpoints using Alchemy API
+// Base Mainnet
 await add_provider(
   create_provider(
     8453,
     "https://base-mainnet.g.alchemy.com/v2/" + process.env.ALCHEMY_KEY
   )
 );
+
+// Base Sepolia (Testnet)
+await add_provider(
+  create_provider(
+    84532,
+    "https://base-sepolia.g.alchemy.com/v2/" + process.env.ALCHEMY_KEY
+  )
+);
+
+// Optimism Mainnet
+await add_provider(
+  create_provider(
+    10,
+    "https://opt-mainnet.g.alchemy.com/v2/" + process.env.ALCHEMY_KEY
+  )
+);
+
+// Optimism Sepolia (Testnet)
+await add_provider(
+  create_provider(
+    11155420,
+    "https://opt-sepolia.g.alchemy.com/v2/" + process.env.ALCHEMY_KEY
+  )
+);
+
+// Arbitrum Mainnet
+await add_provider(
+  create_provider(
+    42161,
+    "https://arb-mainnet.g.alchemy.com/v2/" + process.env.ALCHEMY_KEY
+  )
+);
+
+// Arbitrum Sepolia (Testnet)
+await add_provider(
+  create_provider(
+    421614,
+    "https://arb-sepolia.g.alchemy.com/v2/" + process.env.ALCHEMY_KEY
+  )
+);
+
+// Scroll Mainnet
+await add_provider(
+  create_provider(
+    534352,
+    "https://scroll-mainnet.g.alchemy.com/v2/" + process.env.ALCHEMY_KEY
+  )
+);
+
+// Scroll Sepolia (Testnet)
+await add_provider(
+  create_provider(
+    534351,
+    "https://scroll-sepolia.g.alchemy.com/v2/" + process.env.ALCHEMY_KEY
+  )
+);
+
+// Linea Mainnet
+await add_provider(
+  create_provider(
+    59144,
+    "https://linea-mainnet.g.alchemy.com/v2/" + process.env.ALCHEMY_KEY
+  )
+);
+
+// Linea Sepolia (Testnet)
+await add_provider(
+  create_provider(
+    11155111,
+    "https://linea-sepolia.g.alchemy.com/v2/" + process.env.ALCHEMY_KEY
+  )
+);
+
+// Polygon
+await add_provider(
+  create_provider(
+    139,
+    "https://polygon-mainnet.g.alchemy.com/v2/" + process.env.ALCHEMY_KEY
+  )
+);
+
+// eth-sepolia
 await add_provider(
   create_provider(
     11155111,
