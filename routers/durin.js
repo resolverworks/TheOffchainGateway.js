@@ -127,7 +127,7 @@ await add_provider(
 // eth-sepolia
 await add_provider(
   create_provider(
-    11155111,
+    59141,
     "https://eth-sepolia.g.alchemy.com/v2/" + process.env.ALCHEMY_KEY
   )
 );
