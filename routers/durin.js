@@ -141,7 +141,7 @@ const ens = new ethers.Contract(
 export default {
   slug: "durin",
   async resolve(name) {
-    const { link, labels } = await cache.get(name, find_base);
+    const { link, labels } = await find_base(name);
     if (!link) return;
     if (labels.length == 0) {
       // this is the basename
