@@ -14,7 +14,7 @@ const REGISTRY_ABI = new ethers.Interface([
   "function contenthash(bytes32 token) view returns (bytes)",
 ]);
 
-const cache = new SmartCache();
+const cache = new SmartCache({ ms: 20000 });
 
 function create_provider(chain, rpc) {
   return new ethers.JsonRpcProvider(rpc, chain, {
