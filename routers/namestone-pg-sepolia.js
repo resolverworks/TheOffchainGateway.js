@@ -10,7 +10,6 @@ const domain_cache = new SmartCache();
 const record_cache = new SmartCache();
 
 export default {
-  //slug: 'namestone',
   async resolve(name) {
     const MIN = 2; // currently every domain is "a.b"
     let labels = name.split(".");
@@ -32,7 +31,7 @@ export default {
 async function find_domain(name) {
   log(`namestone domain: ${safe_name(name)}`);
   let [domain] =
-    await sql`SELECT * FROM domain WHERE name = ${name} and network = 'mainnet' LIMIT 1`;
+    await sql`SELECT * FROM domain WHERE name = ${name} and network = 'sepolia' LIMIT 1`;
   return domain;
 }
 

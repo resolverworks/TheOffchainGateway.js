@@ -21,7 +21,8 @@ export const TOR_DEPLOYS = {
 	'ds': '0x179Be112b24Ad4cFC392eF8924DfA08C20Ad8583', // DNS Sepolia
 	'eg': '0x2e513399b2c5337e82a0a71992cbd09b78170843', // ENS Goerli
 	'o1': '0xd17347fA0a6eeC89a226c96a9ae354F785e94241', // Hybrid deploy mainnet
-	'o2': "0xA87361C4E58B619c390f469B9E6F27d759715125", // New Hybrid deploy mainnet with onchain priority
+	'o2': "0xA87361C4E58B619c390f469B9E6F27d759715125", //  Hybrid deploy mainnet with onchain priority
+	'os1': "0x467893bFE201F8EfEa09BBD53fB69282e6001595", //  Hybrid deploy sepolia with onchain priority
 
 	//DURIN
 	'sd1': "0x00f9314C69c3e7C37b3C7aD36EF9FB40d94eDDe1", // Durin Sepolia (v1)
@@ -76,6 +77,8 @@ if (is_enabled(process.env.NAMESTONE_PROD)) {
 		let pg = (await import('./routers/namestone-pg.js')).default
 		ROUTERS.push({...pg, deploy: 'e1', slug: 'namestone-pg'});
 		ROUTERS.push({...pg, deploy: 'e0', slug: 'pg'});
+		let pgSepolia = (await import('./routers/namestone-pg-sepolia.js')).default
+		ROUTERS.push({...pgSepolia, deploy: 'os1', slug: 'namestone-pg-sepolia'});
 	}
 }
 
